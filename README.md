@@ -20,6 +20,8 @@ $ npm install
 $ npm run dev
 ```
 
+#### Please use this for debug so that you can enjoy hot-reload
+
 ### Build
 
 ```bash
@@ -32,3 +34,6 @@ $ npm run build:mac
 # For Linux
 $ npm run build:linux
 ```
+
+
+

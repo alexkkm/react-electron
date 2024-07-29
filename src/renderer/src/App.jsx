@@ -1,57 +1,57 @@
-import Versions from "./components/Versions";
+// Basic tools
+import {
+	BrowserRouter,
+	Routes,
+	Route,
+	Link,
+	useLocation,
+} from "react-router-dom";
+
+// Pages
 import DarkThemePage from "./components/darktheme";
 
-import electronLogo from "./assets/electron.svg";
+// Styling
 import "./App.css";
 
-function App() {
-	return <DarkThemePage />;
-}
+// indicate the current pathname and display it
+const PathNameIndicator = () => {
+	const location = useLocation();
+	console.log(location.pathname);
+	return <p>PathName: {location.pathname}</p>;
+};
 
-const Old = () => {
-	const ipcHandle = () => window.electron.ipcRenderer.send("ping");
-
+// Hoem Page
+const HomePage = () => {
 	return (
-		<>
-			<img
-				alt="logo"
-				className="logo"
-				src={electronLogo}
-			/>
-			<div className="creator">Powered by electron-vite</div>
-			<div className="text">
-				Build an Electron app with <span className="react">React</span>
-			</div>
-			<p className="tip">
-				Please try pressing <code>F12</code> to open the devTool
-			</p>
-			<div className="actions">
-				<div className="action">
-					<a
-						href="https://electron-vite.org/"
-						target="_blank"
-						rel="noreferrer">
-						Documentation
-					</a>
-				</div>
-				<div className="action">
-					<a
-						target="_blank"
-						rel="noreferrer"
-						onClick={ipcHandle}>
-						Send IPC
-					</a>
-					<a
-						onClick={() => {
-							console.log("hi");
-						}}>
-						Hi
-					</a>
-				</div>
-			</div>
-			<Versions></Versions>
-		</>
+		<div>
+			<Link to="/darktheme">Dark Cyberpunk theme</Link>
+			<hr />
+			<PathNameIndicator />
+		</div>
 	);
 };
 
+// The main componenet of the app
+function App() {
+	return (
+		<BrowserRouter>
+			<Routes>
+				<Route
+					path="/"
+					element={<HomePage />}>
+					Home Page
+				</Route>
+				<Route
+					path="/home"
+					element={<HomePage />}>
+					Home Page
+				</Route>
+				<Route
+					path="/darktheme"
+					element={<DarkThemePage />}
+				/>
+			</Routes>
+		</BrowserRouter>
+	);
+}
 export default App;
