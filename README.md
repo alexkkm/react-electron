@@ -4,8 +4,6 @@ An Electron application with React
 
 ## Recommended IDE Setup
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-
 ## Project Setup
 
 ### Install
@@ -34,6 +32,9 @@ $ npm run build:mac
 # For Linux
 $ npm run build:linux
 ```
+
+### Resource on electron-vite
+https://cn.electron-vite.org/guide/features
 
 
 
