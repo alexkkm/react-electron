@@ -1,0 +1,42 @@
+.weatherWidget{
+  /* Out shape */
+  width: 200px;
+	height: 100px;
+
+  /* background */
+	background-color: #ffffff00;
+
+  
+  /* border */
+  /*
+  border-width: 1px;
+  border-color: black;
+  border-style: solid;
+  */
+
+  /* Inner element lying*/
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+}
+
+.weatherWidget span{
+  /* font */
+  font-family: Rajdhani-SemiBold;
+
+  /* Color */
+  color: #00f0ff;
+
+  /* Size */
+  font-size: 75px;
+}
+
+
+.weatherIcon{
+  /* Color */
+  color: #00f0ff;
+
+  /* Size */
+  font-size: 75px;
+}

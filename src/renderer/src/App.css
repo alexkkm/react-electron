@@ -1,0 +1,38 @@
+.desktop{
+    background-color: #000000;
+    /*
+    background-image:linear-gradient(
+      to bottom,
+      #01000f ,
+      #000000
+    );*/
+    background-repeat: no-repeat;
+}
+
+/* import the font: "Aero Matics Bold" */
+@font-face {
+	font-family: 'Aero Matics Bold';
+	src: url('./assets/fonts/AeroMaticsBold.ttf') format('truetype');
+}
+
+/* import the font: "Rajdhani" with different font weight */
+@font-face {
+	font-family: 'Rajdhani-Bold';
+	src: url('./assets/fonts/Rajdhani-Bold.ttf') format('truetype');
+}
+@font-face {
+	font-family: 'Rajdhani-Light';
+	src: url('./assets/fonts/Rajdhani-Light.ttf') format('truetype');
+}
+@font-face {
+	font-family: 'Rajdhani-Medium';
+	src: url('./assets/fonts/Rajdhani-Medium.ttf') format('truetype');
+}
+@font-face {
+	font-family: 'Rajdhani-SemiBold';
+	src: url('./assets/fonts/Rajdhani-SemiBold.ttf') format('truetype');
+}
+@font-face {
+	font-family: 'Rajdhani-Regular';
+	src: url('./assets/fonts/Rajdhani-Regular.ttf') format('truetype');
+}
