@@ -12,7 +12,6 @@ import WeatherWidget from "./components/Weather";
 // indicate the current pathname and display it
 const PathNameIndicator = () => {
 	const location = useLocation();
-	console.log(location.pathname);
 	return <p>PathName: {location.pathname}</p>;
 };
 
