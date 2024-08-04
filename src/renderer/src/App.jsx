@@ -8,6 +8,7 @@ import TestingPage from "./components/TestingPage";
 // Styling
 import "./App.css";
 import WeatherWidget from "./components/Weather";
+import ClockWidget from "./components/Clock";
 
 // indicate the current pathname and display it
 const PathNameIndicator = () => {
@@ -26,6 +27,9 @@ const HomePage = () => {
 			<PathNameIndicator />
 			<hr />
 			<WeatherWidget />
+			<hr />
+			<ClockWidget />
+			<hr />
 		</div>
 	);
 };
