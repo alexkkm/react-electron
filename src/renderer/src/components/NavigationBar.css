@@ -1,6 +1,6 @@
 .navigationBar{
     /* Out shape */
-    width: 50px;
+    width: 100px;
     height: 100%;
 
     /* background */
@@ -15,7 +15,7 @@
 
 .navigationBarWidget{
     /* Out shape */
-    width: 50px;
+    width: 100px;
     height: 15px;
 
     /* Inner */
@@ -24,7 +24,7 @@
 
     /* Inner element lying*/
 	display: flex;
-    justify-content: center;
+    justify-content: left;
 	align-items: center;
 	cursor: pointer;
 }

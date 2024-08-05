@@ -1,4 +1,5 @@
-import { TfiViewList } from "react-icons/tfi";
+import { TfiViewListAlt } from "react-icons/tfi";
+import { BsBroadcastPin } from "react-icons/bs";
 
 import "./NavigationBar.css"
 
@@ -7,34 +8,34 @@ const NavigationBar = () => {
     return (
         //TODO Use a json to store for the different Widgets information
         <div className='navigationBar'>
-            <NavigationBarWidget />
-            <NavigationBarWidget />
+            <NavigationBarWidget icon={<TfiViewListAlt style={{ color: '#00f0ff' }} />} title="setting" />
+            <NavigationBarWidget icon={<BsBroadcastPin style={{ color: '#00f0ff' }} />} title="network" />
         </div>
     );
 };
 
 // The single Navigation Widget
-const NavigationBarWidget = () => {
+const NavigationBarWidget = ({ icon, title }) => {
     return (
         <div className="navigationBarWidget">
-            <BarWidgetIcon />
-            <BarWidgetTitle />
+            <BarWidgetIcon icon={icon} />
+            <BarWidgetTitle title={title} />
         </div>
     );
 };
 
-const BarWidgetIcon = () => {
+const BarWidgetIcon = ({ icon }) => {
     return (
         <div className="barWidgetIcon">
-            <TfiViewList style={{ color: '#00f0ff' }} />
+            {icon}
         </div>
     )
 }
 
-const BarWidgetTitle = () => {
+const BarWidgetTitle = ({ title }) => {
     return (
         <div className="barWidgetTitle">
-            <p style={{ color: '#00f0ff' }}>Title</p>
+            <p style={{ color: '#00f0ff' }}>{title}</p>
         </div>
     )
 }
