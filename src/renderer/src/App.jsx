@@ -1,12 +1,12 @@
 // Basic tools
 import { BrowserRouter, Routes, Route, Link, useLocation, } from "react-router-dom";
 
+// Styling
+import "./App.css";
+
 // Pages
 import DarkThemePage from "./components/darktheme";
 import TestingPage from "./components/TestingPage";
-
-// Styling
-import "./App.css";
 import WeatherWidget from "./components/Weather";
 import ClockWidget from "./components/Clock";
 
@@ -37,9 +37,10 @@ const HomePage = () => {
 // TODO: Desktop is the main door of the app
 const Desktop = () => {
 	return (
-		<div id="desktop">
-			<NavigationBar />
+		<div className="desktop">
 			<WeatherWidget />
+			<ClockWidget />
+			<iframe src="https://www.google.com" title="browserInside" width="25%" height="25%" />
 		</div>
 	);
 };
@@ -62,6 +63,9 @@ const NavigationBarWidget = () => {
 	);
 };
 
+
+
+
 // The main componenet of the app
 function App() {
 	return (
@@ -69,7 +73,7 @@ function App() {
 			<Routes>
 				<Route
 					path="/"
-					element={<HomePage />}>
+					element={<Desktop />}>
 					Home Page
 				</Route>
 				<Route

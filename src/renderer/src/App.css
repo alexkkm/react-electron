@@ -9,6 +9,9 @@
     background-repeat: no-repeat;
 }
 
+
+/** Font **/
+
 /* import the font: "Aero Matics Bold" */
 @font-face {
 	font-family: 'Aero Matics Bold';

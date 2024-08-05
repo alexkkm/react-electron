@@ -73,11 +73,8 @@ const WeatherWidget = (parameters) => {
 		const currentTime = new Date();
 		const currentHour = currentTime.getHours();
 
-		console.log(currentHour);
-
+		//set "daytime" to be "true" or "false" according to the "currentHour"
 		(currentHour >= 6) && (currentHour <= 18) ? (setIsDayTime("true")) : (setIsDayTime("false"))
-
-		console.log(isDayTime)
 	}
 
 	useEffect(() => {
