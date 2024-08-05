@@ -4,6 +4,9 @@ import { BrowserRouter, Routes, Route, Link, useLocation, } from "react-router-d
 // Styling
 import "./App.css";
 
+// Components
+import NavigationBar from "./components/NavigationBar";
+
 // Pages
 import DarkThemePage from "./components/darktheme";
 import TestingPage from "./components/TestingPage";
@@ -38,33 +41,12 @@ const HomePage = () => {
 const Desktop = () => {
 	return (
 		<div className="desktop">
+			<NavigationBar />
 			<WeatherWidget />
 			<ClockWidget />
-			<iframe src="https://www.google.com" title="browserInside" width="25%" height="25%" />
 		</div>
 	);
 };
-
-// Navigation Bar
-const NavigationBar = () => {
-	return (
-		//TODO Use a json to store for the different Widgets information
-		<NavigationBarWidget />
-	);
-};
-
-// The signle
-const NavigationBarWidget = () => {
-	return (
-		<div>
-			<BarWidgetIcon />
-			<BarWidgetTitle />
-		</div>
-	);
-};
-
-
-
 
 // The main componenet of the app
 function App() {

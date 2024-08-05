@@ -1,0 +1,40 @@
+.navigationBar{
+    /* Out shape */
+    width: 50px;
+    height: 100%;
+
+    /* background */
+    background-color: #ffffff00;
+
+    /* Inner element lying*/
+	display: grid;
+	justify-content: left;
+	align-items: left;
+	cursor: pointer;
+}
+
+.navigationBarWidget{
+    /* Out shape */
+    width: 50px;
+    height: 15px;
+
+    /* Inner */
+    margin: 5px;
+    padding: 5px;
+
+    /* Inner element lying*/
+	display: flex;
+    justify-content: center;
+	align-items: center;
+	cursor: pointer;
+}
+
+.barWidgetIcon{
+    /* Inner */
+    margin: 5px;
+}
+
+.barWidgetTitle{
+    /* Inner */
+    margin: 5px;
+}
