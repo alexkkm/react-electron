@@ -1,5 +1,6 @@
 // Basic tools
 import { BrowserRouter, Routes, Route, Link, useLocation, } from "react-router-dom";
+import { useState } from "react";
 
 // Styling
 import "./App.css";
@@ -39,11 +40,23 @@ const HomePage = () => {
 
 // TODO: Desktop is the main door of the app
 const Desktop = () => {
+	// state parameters
+	const [isBlurred, setIsBlurred] = useState(false);
+
+	// blur the element by changing the "isBlurred"
+	const handleButtonClick = () => {
+		setIsBlurred(!isBlurred); // Toggle the blur state
+	};
+
 	return (
 		<div className="desktop">
 			<NavigationBar />
-			<WeatherWidget />
-			<ClockWidget />
+			<button onClick={handleButtonClick}>Toggle Blur</button>
+			<div className={`transition ${isBlurred ? 'blurred' : ''}`}>
+				<WeatherWidget />
+				<ClockWidget />
+			</div>
+
 		</div>
 	);
 };

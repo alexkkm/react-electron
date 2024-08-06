@@ -39,3 +39,12 @@
 	font-family: 'Rajdhani-Regular';
 	src: url('./assets/fonts/Rajdhani-Regular.ttf') format('truetype');
 }
+
+
+.transition {
+    transition: filter 0.3s ease; /* Add a transition for smooth blur effect */
+}
+
+.blurred {
+    filter: blur(5px);
+}
