@@ -2,6 +2,8 @@
 import { BrowserRouter, Routes, Route, Link, useLocation, } from "react-router-dom";
 import { useState } from "react";
 
+import { MdSettings } from "react-icons/md";
+
 // Styling
 import "./App.css";
 
@@ -50,8 +52,9 @@ const Desktop = () => {
 
 	return (
 		<div className="desktop">
-
-			<button onClick={handleButtonClick}>Toggle Blur</button>
+			<div className="settingButton" onClick={handleButtonClick}>
+				<MdSettings />
+			</div>
 			<div className={`transition ${isBlurred ? 'blurred' : ''}`}>
 				<WeatherWidget />
 				<ClockWidget />

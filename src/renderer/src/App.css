@@ -9,7 +9,15 @@
     background-repeat: no-repeat;
 }
 
+.settingButton{
+  /* Color */
+  color: #00f0ff;
 
+  /* Size */
+  font-size: 20px;
+
+  cursor: pointer;
+}
 /** Font **/
 
 /* import the font: "Aero Matics Bold" */
@@ -40,7 +48,7 @@
 	src: url('./assets/fonts/Rajdhani-Regular.ttf') format('truetype');
 }
 
-
+/** For bluring effect for desktop **/
 .transition {
     transition: filter 0.3s ease; /* Add a transition for smooth blur effect */
 }
