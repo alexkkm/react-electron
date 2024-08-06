@@ -50,11 +50,14 @@ const Desktop = () => {
 
 	return (
 		<div className="desktop">
-			<NavigationBar />
+
 			<button onClick={handleButtonClick}>Toggle Blur</button>
 			<div className={`transition ${isBlurred ? 'blurred' : ''}`}>
 				<WeatherWidget />
 				<ClockWidget />
+			</div>
+			<div className={`transition ${isBlurred ? '' : 'hidden'}`}>
+				<NavigationBar />
 			</div>
 
 		</div>

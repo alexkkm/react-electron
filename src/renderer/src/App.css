@@ -48,3 +48,8 @@
 .blurred {
     filter: blur(5px);
 }
+
+.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
