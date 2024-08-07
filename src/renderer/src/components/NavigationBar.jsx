@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
-import { TfiViewListAlt } from "react-icons/tfi";
+// react-icons
+import { RxCross2 } from "react-icons/rx";
+import { MdSettings } from "react-icons/md";
 import { BsBroadcastPin } from "react-icons/bs";
 
 import "./NavigationBar.css"
@@ -9,8 +11,11 @@ import "./NavigationBar.css"
 const NavigationBar = () => {
     return (
         <div className='navigationBar'>
-            <NavigationBarWidget icon={<TfiViewListAlt style={{ color: '#00f0ff' }} />} title="setting" />
-            <NavigationBarWidget icon={<BsBroadcastPin style={{ color: '#00f0ff' }} />} title="network" />
+            <div className="closeNavigationBarButton">
+                <RxCross2 />
+            </div>
+            <NavigationBarWidget className="setting" icon={<MdSettings style={{ color: '#00f0ff' }} />} title="setting" />
+            <NavigationBarWidget className="" icon={<BsBroadcastPin style={{ color: '#00f0ff' }} />} title="network" />
         </div>
     );
 };

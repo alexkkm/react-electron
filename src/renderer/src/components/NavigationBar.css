@@ -1,8 +1,8 @@
 .navigationBar{
     /* Position */
     position: absolute;
-    top: 20px;
-    left: 20px;
+    top: 0px;
+    left: 0px;
 
     /* Out shape */
     width: 100px;
@@ -18,7 +18,31 @@
 	cursor: pointer;
 }
 
+.closeNavigationBarButton{
+    /* Position */
+    position: relative;
+    top: 5px;
+    left: 5px;
+
+    /* Out shape */
+    width: 100px;
+    height: 15px;
+
+    /* Size */
+    font-size: 20px;
+
+    /* Color */
+    color: #00f0ff;
+
+    /* Effect */
+    cursor: pointer;
+}
+
 .navigationBarWidget{
+    position: relative;
+    top: 15px;
+    left: 0px;
+
     /* Out shape */
     width: 100px;
     height: 15px;

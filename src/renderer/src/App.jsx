@@ -2,7 +2,7 @@
 import { BrowserRouter, Routes, Route, Link, useLocation, } from "react-router-dom";
 import { useState } from "react";
 
-import { MdSettings } from "react-icons/md";
+import { TfiViewListAlt } from "react-icons/tfi";
 
 // Styling
 import "./App.css";
@@ -54,15 +54,13 @@ const Desktop = () => {
 		<div className="desktop">
 			<div className="hiddenArea">
 				<div className={`transition ${isBlurred ? '' : 'hidden'}`}>
-					<NavigationBar />
+					<NavigationBar handleButtonClick={handleButtonClick} />
 				</div>
 			</div>
 
 			<div className="mainScreen">
-				<div className="settingButton" onClick={handleButtonClick}>
-					<MdSettings />
-				</div>
 				<div className={`transition ${isBlurred ? 'blurred' : ''}`}>
+					<TfiViewListAlt className="settingButton" onClick={handleButtonClick} />
 					<WeatherWidget />
 					<ClockWidget />
 				</div>
