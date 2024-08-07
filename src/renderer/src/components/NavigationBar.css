@@ -1,4 +1,9 @@
 .navigationBar{
+    /* Position */
+    position: absolute;
+    top: 20px;
+    left: 20px;
+
     /* Out shape */
     width: 100px;
     height: 100%;

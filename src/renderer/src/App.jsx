@@ -52,6 +52,9 @@ const Desktop = () => {
 
 	return (
 		<div className="desktop">
+			<div className={`transition ${isBlurred ? '' : 'hidden'}`}>
+				<NavigationBar />
+			</div>
 			<div className="settingButton" onClick={handleButtonClick}>
 				<MdSettings />
 			</div>
@@ -59,9 +62,7 @@ const Desktop = () => {
 				<WeatherWidget />
 				<ClockWidget />
 			</div>
-			<div className={`transition ${isBlurred ? '' : 'hidden'}`}>
-				<NavigationBar />
-			</div>
+
 
 		</div>
 	);

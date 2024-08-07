@@ -1,3 +1,4 @@
+/** Elements **/
 .desktop{
     background-color: #000000;
     /*
@@ -10,14 +11,30 @@
 }
 
 .settingButton{
-  /* Color */
-  color: #00f0ff;
+  /* Outshape */
+  height: 20px;
+  width: 20px;
 
   /* Size */
   font-size: 20px;
 
+  /* Color */
+  color: #00f0ff;
+
+  /* Effect */
   cursor: pointer;
 }
+
+/** Effect **/
+.blurred {
+  filter: blur(5px);
+}
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
 /** Font **/
 
 /* import the font: "Aero Matics Bold" */
@@ -53,11 +70,3 @@
     transition: filter 0.3s ease; /* Add a transition for smooth blur effect */
 }
 
-.blurred {
-    filter: blur(5px);
-}
-
-.hidden {
-    opacity: 0;
-    visibility: hidden;
-}
