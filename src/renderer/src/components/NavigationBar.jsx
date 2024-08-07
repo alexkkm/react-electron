@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 // react-icons
 import { RxCross2 } from "react-icons/rx";
 import { MdSettings } from "react-icons/md";
@@ -14,8 +12,8 @@ const NavigationBar = () => {
             <div className="closeNavigationBarButton">
                 <RxCross2 />
             </div>
-            <NavigationBarWidget className="setting" icon={<MdSettings style={{ color: '#00f0ff' }} />} title="setting" />
-            <NavigationBarWidget className="" icon={<BsBroadcastPin style={{ color: '#00f0ff' }} />} title="network" />
+            <NavigationBarWidget className="setting" icon={<MdSettings style={{ color: '#00f0ff' }} />} title="setting" onClick={console.log("")} />
+            <NavigationBarWidget className="network" icon={<BsBroadcastPin style={{ color: '#00f0ff' }} />} title="network" onClick={console.log("")} />
         </div>
     );
 };

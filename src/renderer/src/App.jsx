@@ -1,74 +1,13 @@
 // Basic tools
-import { BrowserRouter, Routes, Route, Link, useLocation, } from "react-router-dom";
-import { useState } from "react";
-
-import { TfiViewListAlt } from "react-icons/tfi";
+import { BrowserRouter, Routes, Route, } from "react-router-dom";
 
 // Styling
 import "./App.css";
 
-// Components
-import NavigationBar from "./components/NavigationBar";
-
 // Pages
+import Desktop from "./components/Desktop";
 import DarkThemePage from "./components/darktheme";
 import TestingPage from "./components/TestingPage";
-import WeatherWidget from "./components/Weather";
-import ClockWidget from "./components/Clock";
-
-// indicate the current pathname and display it
-const PathNameIndicator = () => {
-	const location = useLocation();
-	return <p>PathName: {location.pathname}</p>;
-};
-
-// Hoem Page that temporately use as main door
-const HomePage = () => {
-	return (
-		<div>
-			<Link to="/darktheme">Dark Cyberpunk theme</Link>
-			<hr />
-			<Link to="/testing">Testing</Link>
-			<hr />
-			<PathNameIndicator />
-			<hr />
-			<WeatherWidget />
-			<hr />
-			<ClockWidget />
-			<hr />
-		</div>
-	);
-};
-
-// TODO: Desktop is the main door of the app
-const Desktop = () => {
-	// state parameters
-	const [isBlurred, setIsBlurred] = useState(false);
-
-	// blur the element by changing the "isBlurred"
-	const handleButtonClick = () => {
-		setIsBlurred(!isBlurred); // Toggle the blur state
-	};
-
-	return (
-		<div className="desktop">
-			<div className="hiddenArea">
-				<div className={`transition ${isBlurred ? '' : 'hidden'}`}>
-					<NavigationBar handleButtonClick={handleButtonClick} />
-				</div>
-			</div>
-
-			<div className="mainScreen">
-				<div className={`transition ${isBlurred ? 'blurred' : ''}`}>
-					<TfiViewListAlt className="settingButton" onClick={handleButtonClick} />
-					<WeatherWidget />
-					<ClockWidget />
-				</div>
-			</div>
-
-		</div>
-	);
-};
 
 // The main componenet of the app
 function App() {
@@ -78,11 +17,6 @@ function App() {
 				<Route
 					path="/"
 					element={<Desktop />}>
-					Home Page
-				</Route>
-				<Route
-					path="/home"
-					element={<HomePage />}>
 					Home Page
 				</Route>
 				<Route
