@@ -52,17 +52,21 @@ const Desktop = () => {
 
 	return (
 		<div className="desktop">
-			<div className={`transition ${isBlurred ? '' : 'hidden'}`}>
-				<NavigationBar />
-			</div>
-			<div className="settingButton" onClick={handleButtonClick}>
-				<MdSettings />
-			</div>
-			<div className={`transition ${isBlurred ? 'blurred' : ''}`}>
-				<WeatherWidget />
-				<ClockWidget />
+			<div className="hiddenArea">
+				<div className={`transition ${isBlurred ? '' : 'hidden'}`}>
+					<NavigationBar />
+				</div>
 			</div>
 
+			<div className="mainScreen">
+				<div className="settingButton" onClick={handleButtonClick}>
+					<MdSettings />
+				</div>
+				<div className={`transition ${isBlurred ? 'blurred' : ''}`}>
+					<WeatherWidget />
+					<ClockWidget />
+				</div>
+			</div>
 
 		</div>
 	);
