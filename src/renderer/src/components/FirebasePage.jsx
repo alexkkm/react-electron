@@ -1,6 +1,6 @@
 // react package
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // firebase package
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth'; // now firebase suugest to import the functions directly form the library, instead of import the object Auth() as oldest version of firebase
@@ -202,6 +202,7 @@ const FirebasePage = () => {
             <hr />
             <FetchingArea />
             <hr />
+            <Link to="/">Home</Link>
         </div>
     );
 }

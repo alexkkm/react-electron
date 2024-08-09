@@ -38,26 +38,26 @@ const HomePage = () => {
 const Desktop = () => {
     // state parameters
     const [isBlurred, setIsBlurred] = useState(false);
+    const [isButtonActive, setIsButtonActive] = useState(false);
 
     // blur the element by changing the "isBlurred"
-    const handleButtonClick = () => {
+    const switchNavigationBar = () => {
         setIsBlurred(!isBlurred); // Toggle the blur state
+        setIsButtonActive(true);
     };
 
     return (
         <div className="desktop">
             <div className="hiddenArea">
-                <div className={`transition ${isBlurred ? '' : 'hidden'}`}>
-                    <NavigationBar handleButtonClick={handleButtonClick} />
+                <div className={`switchNavigationBarButton ${isBlurred ? '' : 'hidden'}`}>
+                    <NavigationBar switchNavigationBar={switchNavigationBar} />
                 </div>
             </div>
 
-            <div className="mainScreen">
-                <div className={`transition ${isBlurred ? 'blurred' : ''}`}>
-                    <TfiViewListAlt className="settingButton" onClick={handleButtonClick} />
-                    <WeatherWidget />
-                    <ClockWidget />
-                </div>
+            <div className={`mainScreen ${isBlurred ? 'blurred' : ''}`}>
+                <TfiViewListAlt className="settingButton" onClick={switchNavigationBar} />
+                <WeatherWidget className={`weatherWidget ${isButtonActive ? "active" : ""}`} />
+                <ClockWidget className={`clockWidget ${isButtonActive ? "active" : ""}`} />
             </div>
 
         </div>

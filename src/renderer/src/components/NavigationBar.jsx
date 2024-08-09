@@ -8,26 +8,35 @@ import { BsBroadcastPin } from "react-icons/bs";
 import "./NavigationBar.css"
 
 // Navigation Bar
-const NavigationBar = () => {
-
+const NavigationBar = ({ switchNavigationBar }) => {
     // name the useNavigate() hook as "navigate"
     const navigate = useNavigate();
 
     return (
         <div className='navigationBar'>
-            <div className="closeNavigationBarButton">
+            <div className="closeNavigationBarButton" onClick={switchNavigationBar}>
                 <RxCross2 />
             </div>
-            <NavigationBarWidget className="setting" icon={<MdSettings style={{ color: '#00f0ff' }} />} title="setting" onClick={console.log("")} />
-            <NavigationBarWidget className="network" icon={<BsBroadcastPin style={{ color: '#00f0ff' }} />} title="network" onClick={navigate("/firebase")} />
+            <NavigationBarWidget
+                className="setting"
+                icon={<MdSettings style={{ color: '#00f0ff' }} />}
+                title="setting"
+                onClick={() => { console.log("navigate to setting page") }}
+            />
+            <NavigationBarWidget
+                className="network"
+                icon={<BsBroadcastPin style={{ color: '#00f0ff' }} />}
+                title="network"
+                onClick={() => navigate("/network")}
+            />
         </div>
     );
 };
 
 // The single Navigation Widget
-const NavigationBarWidget = ({ icon, title }) => {
+const NavigationBarWidget = ({ icon, title, onClick }) => {
     return (
-        <div className="navigationBarWidget">
+        <div className="navigationBarWidget" onClick={onClick}>
             <BarWidgetIcon icon={icon} />
             <BarWidgetTitle title={title} />
         </div>
@@ -49,6 +58,5 @@ const BarWidgetTitle = ({ title }) => {
         </div>
     )
 }
-
 
 export default NavigationBar;

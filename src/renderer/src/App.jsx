@@ -9,6 +9,7 @@ import Desktop from "./components/Desktop";
 import DarkThemePage from "./components/darktheme";
 import TestingPage from "./components/TestingPage";
 import FirebasePage from "./components/FirebasePage";
+import NetworkPage from "./components/Network";
 
 // The main componenet of the app
 function App() {
@@ -31,6 +32,9 @@ function App() {
 				<Route
 					path="/firebase"
 					element={<FirebasePage />} />
+				<Route
+					path="/network"
+					element={<NetworkPage />} />
 			</Routes>
 		</BrowserRouter>
 	);

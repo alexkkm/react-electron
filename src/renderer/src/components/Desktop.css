@@ -31,17 +31,25 @@
 }
 
 /** Effect **/
-.blurred {
-  filter: blur(5px);
+
+/** For bluring effect and hidden effect for navigationBar **/
+.switchNavigationBarButton {
+    transition: filter 0.3s ease-in-out; /* Add a transition for smooth blur effect */
+}
+.switchNavigationBarButton.hidden {
+  display: none;
+  }
+
+  /** For bluring effect and hidden effect for desktop **/
+.mainScreen {
+  transition: filter 0.3s ease-in-out;
 }
 
-.hidden {
-  opacity: 0;
-  visibility: hidden;
+.mainScreen.blurred {
+  filter: blur(10px);
+  pointer-events: none;
 }
 
-/** For bluring effect for desktop **/
-.transition {
-    transition: filter 0.3s ease; /* Add a transition for smooth blur effect */
+.mainScreen.hidden {
+  display: none;
 }
-
