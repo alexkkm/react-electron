@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+
 // react-icons
 import { RxCross2 } from "react-icons/rx";
 import { MdSettings } from "react-icons/md";
@@ -7,13 +9,17 @@ import "./NavigationBar.css"
 
 // Navigation Bar
 const NavigationBar = () => {
+
+    // name the useNavigate() hook as "navigate"
+    const navigate = useNavigate();
+
     return (
         <div className='navigationBar'>
             <div className="closeNavigationBarButton">
                 <RxCross2 />
             </div>
             <NavigationBarWidget className="setting" icon={<MdSettings style={{ color: '#00f0ff' }} />} title="setting" onClick={console.log("")} />
-            <NavigationBarWidget className="network" icon={<BsBroadcastPin style={{ color: '#00f0ff' }} />} title="network" onClick={console.log("")} />
+            <NavigationBarWidget className="network" icon={<BsBroadcastPin style={{ color: '#00f0ff' }} />} title="network" onClick={navigate("/firebase")} />
         </div>
     );
 };
