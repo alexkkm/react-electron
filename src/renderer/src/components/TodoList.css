@@ -1,0 +1,23 @@
+.TodoListWidget{
+    /* Out shape */
+    width: 500px;
+    height: 200px;
+
+    /* background */
+    background-color: #ffffff00;
+
+    /* Inner element lying*/
+	display: grid;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+
+     /* font */
+     font-family: Rajdhani-SemiBold;
+
+     /* Color */
+     color: #00f0ff;
+ 
+     /* Size */
+     font-size: 40px;
+}

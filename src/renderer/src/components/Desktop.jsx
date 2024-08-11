@@ -9,6 +9,7 @@ import "./Desktop.css"
 import NavigationBar from "./NavigationBar";
 import WeatherWidget from ".//Weather";
 import ClockWidget from "./Clock";
+import TodoListWidget from "./TodoList";
 
 // indicate the current pathname and display it
 const PathNameIndicator = () => {
@@ -58,6 +59,7 @@ const Desktop = () => {
                 <TfiViewListAlt className="settingButton" onClick={switchNavigationBar} />
                 <WeatherWidget className={`weatherWidget ${isButtonActive ? "active" : ""}`} />
                 <ClockWidget className={`clockWidget ${isButtonActive ? "active" : ""}`} />
+                <TodoListWidget />
             </div>
 
         </div>
