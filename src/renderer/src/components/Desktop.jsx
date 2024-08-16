@@ -9,7 +9,7 @@ import "./Desktop.css"
 import NavigationBar from "./NavigationBar";
 import WeatherWidget from ".//Weather";
 import ClockWidget from "./Clock";
-import TodoListWidget from "./TodoList";
+import TodoListWidget from "./TodoListWidget";
 
 // indicate the current pathname and display it
 const PathNameIndicator = () => {

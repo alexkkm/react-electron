@@ -10,6 +10,7 @@ import DarkThemePage from "./components/darktheme";
 import TestingPage from "./components/TestingPage";
 import FirebasePage from "./components/FirebasePage";
 import NetworkPage from "./components/Network";
+import LocalStorageTutorial from "./tutorial/LocalStorage";
 
 // The main componenet of the app
 function App() {
@@ -35,6 +36,9 @@ function App() {
 				<Route
 					path="/network"
 					element={<NetworkPage />} />
+				<Route
+					path="/localStorage"
+					element={<LocalStorageTutorial />} />
 			</Routes>
 		</BrowserRouter>
 	);

@@ -1,13 +1,5 @@
-import { useState, useEffect } from "react";
-
-import "./TodoList.css"
-// Widget of displaying Todo List
-const TodoListWidget = (parameters) => {
-    // variable
-    const [time, setTime] = useState("");
-    const [date, setDate] = useState("");
-
-
+const LocalStorageTutorial = () => {
+    /** This is the CRUD example of local storage **/
     const writeLocal = () => {
         // create data in local storage, setItem("key","value"), while "value" can only be string
         localStorage.setItem("field1", JSON.stringify({ abc: 2, def: "24" }));
@@ -30,17 +22,16 @@ const TodoListWidget = (parameters) => {
     }
 
     useEffect(() => {
-        readLocal();
-    }, []);
+        writeLocal()
+        readLocal()
+    })
 
     return (
-        <div className="TodoListWidget"
-            onClick={() => {
-                console.log("navigate to TodoListPage");
-            }}>
-            <p>Todo</p>
+        <div className="localStorageTutorial">
+            <p>This is the local Storage tutorial</p>
         </div>
-    );
-};
+    )
+}
 
-export default TodoListWidget;
+
+export default LocalStorageTutorial;
