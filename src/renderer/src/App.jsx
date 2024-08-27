@@ -11,6 +11,7 @@ import TestingPage from "./components/TestingPage";
 import FirebasePage from "./components/FirebasePage";
 import NetworkPage from "./components/Network";
 import LocalStorageTutorial from "./tutorial/LocalStorage";
+import NewFirebasePage from "./components/NewFirebase";
 
 // The main componenet of the app
 function App() {
@@ -32,7 +33,7 @@ function App() {
 				/>
 				<Route
 					path="/firebase"
-					element={<FirebasePage />} />
+					element={<NewFirebasePage />} />
 				<Route
 					path="/network"
 					element={<NetworkPage />} />
