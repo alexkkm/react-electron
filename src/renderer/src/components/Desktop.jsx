@@ -11,6 +11,8 @@ import WeatherWidget from ".//Weather";
 import ClockWidget from "./Clock";
 import TodoListWidget from "./TodoListWidget";
 
+import Table from "./Table";
+
 // indicate the current pathname and display it
 const PathNameIndicator = () => {
     const location = useLocation();
@@ -60,6 +62,9 @@ const Desktop = () => {
                 <WeatherWidget className={`weatherWidget ${isButtonActive ? "active" : ""}`} />
                 <ClockWidget className={`clockWidget ${isButtonActive ? "active" : ""}`} />
                 <TodoListWidget />
+                <div className="TableExample">
+                    <Table />
+                </div>
             </div>
 
         </div>

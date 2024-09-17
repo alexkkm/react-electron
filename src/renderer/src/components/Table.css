@@ -1,0 +1,96 @@
+/** Table Component Style **/
+.Table {
+    color: #00f0ff; /* Text color for the Table component */
+    background-color: rgba(0, 240, 255, 0.05); /* Light background color for the Table */
+    border: 1px solid #00f0ff; /* Border color for the Table */
+    border-radius: 5px; /* Rounded corners for the Table */
+    clip-path: polygon( /* Define a custom clipping path */
+        0 0,
+        100% 0,
+        100% calc(100% - 1rem + 2px),
+        calc(100% - 1rem + 2px) 100%,
+        0 100%
+    );
+    position: relative; /* Positioning for the ::before pseudo-element */
+    overflow: hidden; /* Hide any overflow from the clipping path */
+    margin: 0 auto; /* Center the Table div within its parent */
+    width: 90%; /* Set the width of the Table div to 90% of its parent */
+}
+
+.Table::before {
+    background-color: #00f0ff; /* Background color for the pseudo-element */
+    bottom: 5px; /* Position from the bottom */
+    content: ""; /* Empty content for the pseudo-element */
+    display: block; /* Make it a block element */
+    height: 3px; /* Height of the pseudo-element */
+    position: absolute; /* Positioning for the pseudo-element */
+    right: -6px; /* Position from the right */
+    top: auto; /* Automatic positioning from the top */
+    transform: rotate(-45deg); /* Rotate the pseudo-element */
+    width: 22.627416px; /* Width of the pseudo-element */
+    z-index: 100; /* Ensure it appears above other elements */
+}
+
+/** Table Tag Style **/
+table {
+    width: 100%; /* Set table width to 100% of the Table div */
+    border-collapse: collapse; /* Ensure borders are styled correctly */
+}
+
+th, td {
+    border: 1px solid #00f0ff; /* Use the same border color for table cells */
+    padding: 0.5rem; /* Padding inside table cells */
+    text-align: left; /* Align text to the left */
+}
+
+/* Table Title */
+th[colSpan] {
+    background-color: rgba(0, 240, 255, 0.03); /* Background color for title */
+    color: #00f0ff; /* Title text color */
+    font-size: 1.5rem; /* Adjust title font size */
+    padding: 1rem; /* Add some padding around the title */
+}
+
+input {
+    width: 100%; /* Make input fields fill the width of their parent */
+    border: 1px solid #00f0ff; /* Input border color */
+    border-radius: 4px; /* Rounded corners for the input */
+    padding: 0.25rem; /* Padding inside input fields */
+    background: transparent; /* Match input background with the table */
+    color: #00f0ff; /* Input text color */
+}
+
+/** Button Styles **/
+.button-container {
+    margin-bottom: 1rem; /* Space between buttons and table */
+}
+
+.table-button, .delete-button {
+    background-color: rgba(0, 240, 255, 0.1); /* Background color for buttons */
+    border: 1px solid #00f0ff; /* Border color for buttons */
+    border-radius: 5px; /* Rounded corners for buttons */
+    color: #00f0ff; /* Text color for buttons */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    margin-right: 0.5rem; /* Space between buttons */
+    padding: 0.5rem 1rem; /* Padding inside buttons */
+    transition: background-color 0.3s, transform 0.3s; /* Smooth transition for hover effects */
+}
+
+.table-button:hover, .delete-button:hover {
+    background-color: rgba(0, 240, 255, 0.2); /* Darker background on hover */
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
+.table-button:focus, .delete-button:focus {
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 5px #00f0ff; /* Highlight button when focused */
+}
+
+.delete-button {
+    background-color: rgba(255, 0, 0, 0.1); /* Red background for delete button */
+    border: 1px solid #ff0000; /* Red border for delete button */
+}
+
+.delete-button:hover {
+    background-color: rgba(255, 0, 0, 0.2); /* Darker red background on hover */
+}
