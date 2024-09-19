@@ -36,5 +36,7 @@ $ npm run build:linux
 ### Resource on electron-vite
 https://cn.electron-vite.org/guide/features
 
-
-
+# Task:
+1. do the table for firebase.jsx to show all the sub collections in the firebase
+2. design the pop up for edit firebase data value
+3. desgin for button layout
