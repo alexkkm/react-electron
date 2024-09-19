@@ -6,12 +6,15 @@ const Table = () => {
     const [columns, setColumns] = useState([]);
 
     const addRow = () => {
+        // create a new row with: an id, an empty data array with the same length as the number of columns.
+        // and add the new row to the rows array
         setRows([...rows, { id: rows.length, data: Array(columns.length).fill('') }]);
     };
 
     const addColumn = () => {
+        // Add a new column to the columns array with: an id and a name "Column x", where x is the new column number
         setColumns([...columns, { id: columns.length, name: `Column ${columns.length + 1}` }]);
-        // Update existing rows to add an empty cell for the new column
+        // Update existing rows by: adding an empty cell in each rows to represent the cell of the new column
         setRows(rows.map(row => ({ ...row, data: [...row.data, ''] })));
     };
 

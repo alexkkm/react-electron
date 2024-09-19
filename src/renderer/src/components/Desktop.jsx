@@ -19,25 +19,7 @@ const PathNameIndicator = () => {
     return <p>PathName: {location.pathname}</p>;
 };
 
-// Hoem Page that temporately use as main door
-const HomePage = () => {
-    return (
-        <div>
-            <Link to="/darktheme">Dark Cyberpunk theme</Link>
-            <hr />
-            <Link to="/testing">Testing</Link>
-            <hr />
-            <PathNameIndicator />
-            <hr />
-            <WeatherWidget />
-            <hr />
-            <ClockWidget />
-            <hr />
-        </div>
-    );
-};
-
-// TODO: Desktop is the main door of the app
+//Desktop is the main door of the app
 const Desktop = () => {
     // state parameters
     const [isBlurred, setIsBlurred] = useState(false);
