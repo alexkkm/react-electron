@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import './Table.css';
 
 const Table = () => {
+
+    // Notes: we store all the data in the rows array, and we store the column names in the columns array
     const [rows, setRows] = useState([]);
     const [columns, setColumns] = useState([]);
 
@@ -18,15 +20,20 @@ const Table = () => {
         setRows(rows.map(row => ({ ...row, data: [...row.data, ''] })));
     };
 
+    // Update the value of a cell
     const handleChange = (rowIndex, columnIndex, value) => {
+        // copy the "rows" array once and update the "value" of the cell of the selected "rowIndex" and "columnIndex"
         const newRows = [...rows];
         newRows[rowIndex].data[columnIndex] = value;
+        // update the "rows" array with the new value
         setRows(newRows);
     };
 
     const deleteCell = (rowIndex, columnIndex) => {
+        // copy the "rows" array once and mark the cell of the selected "rowIndex" and "columnIndex" as deleted
         const newRows = [...rows];
         newRows[rowIndex].data[columnIndex] = undefined; // Mark the cell as deleted
+        // update the "rows" array with the new value
         setRows(newRows);
 
         // Remove row if all cells are deleted
@@ -55,6 +62,7 @@ const Table = () => {
             }
         }
 
+        // update the "rows" array with the new value
         setRows(newRows);
     };
 
