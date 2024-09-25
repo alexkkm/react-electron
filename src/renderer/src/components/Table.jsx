@@ -34,11 +34,23 @@ const Table = () => {
             newRows.splice(rowIndex, 1);
         }
 
-        // Remove column if all cells in that column are deleted
+        // Remove column if all cells in that column are deleted, and update the column names according to the order of the remaining columns
         for (let colIndex = 0; colIndex < columns.length; colIndex++) {
             if (newRows.every(row => row.data[colIndex] === undefined)) {
-                setColumns(columns.filter((_, index) => index !== colIndex));
-                newRows.forEach(row => row.data.splice(colIndex, 1)); // Remove the column data from each row
+                // Update the columns by filtering out the deleted column
+                const updatedColumns = columns.filter((_, index) => index !== colIndex);
+                setColumns(updatedColumns); // Set the updated columns
+
+                // Remove the column data from each row
+                newRows.forEach(row => row.data.splice(colIndex, 1));
+
+                // Update the column names
+                const renamedColumns = updatedColumns.map((_, index) => ({
+                    id: index,
+                    name: `Column ${index + 1}`,
+                }));
+                setColumns(renamedColumns); // Update the columns with new names
+
                 break; // Exit loop after removing the column
             }
         }

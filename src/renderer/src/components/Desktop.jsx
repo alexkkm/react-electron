@@ -47,6 +47,7 @@ const Desktop = () => {
                 <div className="TableExample">
                     <Table />
                 </div>
+                <hr />
             </div>
 
         </div>
