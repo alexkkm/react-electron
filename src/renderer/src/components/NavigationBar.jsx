@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { RxCross2 } from "react-icons/rx";
 import { MdSettings } from "react-icons/md";
 import { BsBroadcastPin } from "react-icons/bs";
+import { FaBook } from "react-icons/fa";
 
 import "./NavigationBar.css"
 
@@ -28,6 +29,12 @@ const NavigationBar = ({ switchNavigationBar }) => {
                 icon={<BsBroadcastPin style={{ color: '#00f0ff' }} />}
                 title="network"
                 onClick={() => navigate("/network")}
+            />
+            <NavigationBarWidget
+                className="tutorial"
+                icon={<FaBook style={{ color: '#00f0ff' }} />}
+                title="tutorial"
+                onClick={() => navigate("/tutorial")}
             />
         </div>
     );

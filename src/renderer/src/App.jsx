@@ -12,6 +12,7 @@ import FirebasePage from "./components/FirebasePage";
 import NetworkPage from "./components/Network";
 import LocalStorageTutorial from "./tutorial/LocalStorage";
 import NewFirebasePage from "./components/NewFirebase";
+import TutorialPage from "./components/TutorialPage";
 
 // The main componenet of the app
 function App() {
@@ -38,8 +39,12 @@ function App() {
 					path="/network"
 					element={<NetworkPage />} />
 				<Route
+					path="/tutorial"
+					element={<TutorialPage />} />
+				<Route
 					path="/localStorage"
 					element={<LocalStorageTutorial />} />
+
 			</Routes>
 		</BrowserRouter>
 	);

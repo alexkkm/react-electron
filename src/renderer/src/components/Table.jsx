@@ -108,6 +108,8 @@ const Table = () => {
 
             <div className="button-container">
                 <button className="table-button" onClick={addRow}>Add Row</button>
+                <Button label={"Add Row"} onClick={addRow} />
+                <Button label={"Add Column"} onClick={addColumn} />
                 <button className="table-button" onClick={addColumn}>Add Column</button>
             </div>
         </div>
@@ -115,3 +117,14 @@ const Table = () => {
 };
 
 export default Table;
+
+
+const Button = ({ label, onClick }) => {
+    return (
+        <div className="Button">
+            <button className="button" onClick={onClick}>
+                {label}
+            </button>
+        </div>
+    );
+};

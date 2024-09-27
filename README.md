@@ -37,6 +37,7 @@ $ npm run build:linux
 https://cn.electron-vite.org/guide/features
 
 # Task:
+0. desgin the responsive layout for table, button and message board
 1. do the table for firebase.jsx to show all the sub collections in the firebase
 2. design the pop up for edit firebase data value
 3. desgin for button layout

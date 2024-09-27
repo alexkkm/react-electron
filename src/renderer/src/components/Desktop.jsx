@@ -11,8 +11,6 @@ import WeatherWidget from ".//Weather";
 import ClockWidget from "./Clock";
 import TodoListWidget from "./TodoListWidget";
 
-import Table from "./Table";
-
 // indicate the current pathname and display it
 const PathNameIndicator = () => {
     const location = useLocation();
@@ -22,8 +20,8 @@ const PathNameIndicator = () => {
 //Desktop is the main door of the app
 const Desktop = () => {
     // state parameters
-    const [isBlurred, setIsBlurred] = useState(false);
-    const [isButtonActive, setIsButtonActive] = useState(false);
+    const [isBlurred, setIsBlurred] = useState('');
+    const [isButtonActive, setIsButtonActive] = useState('');
 
     // blur the element by changing the "isBlurred"
     const switchNavigationBar = () => {
@@ -41,13 +39,9 @@ const Desktop = () => {
 
             <div className={`mainScreen ${isBlurred ? 'blurred' : ''}`}>
                 <TfiViewListAlt className="settingButton" onClick={switchNavigationBar} />
-                <WeatherWidget className={`weatherWidget ${isButtonActive ? "active" : ""}`} />
-                <ClockWidget className={`clockWidget ${isButtonActive ? "active" : ""}`} />
+                <WeatherWidget />
+                <ClockWidget />
                 <TodoListWidget />
-                <div className="TableExample">
-                    <Table />
-                </div>
-                <hr />
             </div>
 
         </div>
