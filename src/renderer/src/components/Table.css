@@ -65,32 +65,71 @@ input {
     margin-bottom: 1rem; /* Space between buttons and table */
 }
 
-.table-button, .delete-button {
-    background-color: rgba(0, 240, 255, 0.1); /* Background color for buttons */
-    border: 1px solid #00f0ff; /* Border color for buttons */
-    border-radius: 5px; /* Rounded corners for buttons */
-    color: #00f0ff; /* Text color for buttons */
+.button {
+    color: #00f0ff; /* Text color for the button */
+    background-color: rgba(0, 240, 255, 0.1); /* Light background color for the button */
+    border: 1px solid #00f0ff; /* Border color for the button */
+    border-radius: 5px; /* Rounded corners for the button */
+    padding: 0.5rem 1rem; /* Padding inside the button */
     cursor: pointer; /* Change cursor to pointer on hover */
-    margin-right: 0.5rem; /* Space between buttons */
-    padding: 0.5rem 1rem; /* Padding inside buttons */
+    margin: 0.5rem;
     transition: background-color 0.3s, transform 0.3s; /* Smooth transition for hover effects */
+
+    /* Font */
+    font-family: "Rajdhani-Bold", sans-serif;
+    font-size: 100%;
 }
 
-.table-button:hover, .delete-button:hover {
+.button:hover {
     background-color: rgba(0, 240, 255, 0.2); /* Darker background on hover */
     transform: scale(1.05); /* Slightly enlarge the button on hover */
 }
 
-.table-button:focus, .delete-button:focus {
+.button:focus {
     outline: none; /* Remove default outline */
     box-shadow: 0 0 5px #00f0ff; /* Highlight button when focused */
 }
 
 .delete-button {
+    color: #ff0000; /* Text color for the button */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    margin: 0.5rem; /* Space between buttons */
+    padding: 0.5rem 1rem; /* Padding inside the button */
     background-color: rgba(255, 0, 0, 0.1); /* Red background for delete button */
     border: 1px solid #ff0000; /* Red border for delete button */
+    border-radius: 3px; /* Rounded corners for the button */
+
+    clip-path: polygon( /* Define a custom clipping path similar to Table */
+      0 0,
+      100% 0,
+      100% calc(100% - 1rem ),
+      calc(100% - 1rem ) 100%,
+      0 100%
+    );
+    overflow: hidden; /* Hide any overflow from the clip-path */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.3s, transform 0.3s; /* Smooth transition for hover effects */
+
+    /* Font */
+    font-family: "Rajdhani-Bold", sans-serif;
+    font-size: 15px;
+}
+
+.delete-button::before {
+    background-color: #ff0000; /* Background color for the pseudo-element */
+    bottom: 4px; /* Position from the bottom */
+    content: ""; /* Empty content for the pseudo-element */
+    display: block; /* Make it a block element */
+    height: 3px; /* Height of the pseudo-element */
+    position: absolute; /* Positioning for the pseudo-element */
+    right: -3px; /* Position from the right */
+    top: auto; /* Automatic positioning from the top */
+    transform: rotate(-45deg); /* Rotate the pseudo-element */
+    width: 22.627416px; /* Width of the pseudo-element */
+    z-index: 100; /* Ensure it appears above other elements */
 }
 
 .delete-button:hover {
     background-color: rgba(255, 0, 0, 0.2); /* Darker red background on hover */
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
 }

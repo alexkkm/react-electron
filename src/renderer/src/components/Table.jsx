@@ -96,7 +96,7 @@ const Table = () => {
                                                 onChange={(e) => handleChange(rowIndex, colIndex, e.target.value)}
                                                 style={{ borderColor: '#00f0ff' }}
                                             />
-                                            <button className="delete-button" onClick={() => deleteCell(rowIndex, colIndex)}>Delete Cell</button>
+                                            <button className="delete-button" onClick={() => deleteCell(rowIndex, colIndex)}>Delete</button>
                                         </>
                                     ) : null} {/* Render nothing if the cell is deleted */}
                                 </td>
@@ -107,10 +107,8 @@ const Table = () => {
             </table>
 
             <div className="button-container">
-                <button className="table-button" onClick={addRow}>Add Row</button>
-                <Button label={"Add Row"} onClick={addRow} />
-                <Button label={"Add Column"} onClick={addColumn} />
-                <button className="table-button" onClick={addColumn}>Add Column</button>
+                <Button className="table-button" label={"Add Row"} onClick={addRow} />
+                <Button className="table-button" label={"Add Column"} onClick={addColumn} />
             </div>
         </div>
     );
