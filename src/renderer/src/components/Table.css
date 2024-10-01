@@ -97,7 +97,7 @@ input {
     padding: 0.5rem 1rem; /* Padding inside the button */
     background-color: rgba(255, 0, 0, 0.1); /* Red background for delete button */
     border: 1px solid #ff0000; /* Red border for delete button */
-    border-radius: 3px; /* Rounded corners for the button */
+    border-radius: 5px; /* Rounded corners for the button */
 
     clip-path: polygon( /* Define a custom clipping path similar to Table */
       0 0,
