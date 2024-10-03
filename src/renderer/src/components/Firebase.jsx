@@ -1,3 +1,9 @@
+//TODO 
+/*
+1. fix the issue that when the last field of the parent deleteData, the parent will also be removed accidentally
+2. fix the issue of input field bug after a single successful operation
+*/
+
 // react package
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
@@ -14,7 +20,7 @@ import Button from './Button';
 
 import "./FirebasePage.css";
 
-const NewFirebasePage = () => {
+const FirebasePage = () => {
 
     // Write to Realtime Database
     const writeData = async (path, content) => {
@@ -47,12 +53,12 @@ const NewFirebasePage = () => {
                 <NestedTable />
             </div>
 
-            <button onClick={() => window.location.reload()}>Reload Page</button>
+            <Button label={"Back to last page"} onClick={() => window.history.back()} />
         </div>
     );
 };
 
-export default NewFirebasePage;
+export default FirebasePage;
 
 // Nested Table
 const NestedTable = () => {
@@ -75,16 +81,14 @@ const NestedTable = () => {
         fetchAllDataFromFirebase();
     }, []);
 
-    const handleAddField = async (path, key, newFieldName, editValue) => {
-        if (newFieldInputs[key]?.newField && newFieldInputs[key]?.newValue) {
+    const handleAddField = async (path, newFieldName, newFieldValue) => {
+        if (newFieldInputs[path]?.newField && newFieldInputs[path]?.newValue) {
             const updatedData = { ...data };
             const keys = path.split('/'); // 使用點來解析路徑
             const lastKey = keys.pop(); // 獲取當前鍵
-            const parentPath = keys.join('.'); // 獲取父路徑
 
             // Accessing the value dynamically using parentPath and lastKey
             const parentObject = keys.reduce((obj, key) => obj[key], updatedData); // Navigate to the parent object
-
 
             // Function to update the value in the nested object
             function updateNestedObject(obj, keys, newFieldName, value) {
@@ -93,7 +97,7 @@ const NestedTable = () => {
                 parentObject[newFieldName] = value;
             }
             console.log("try")
-            updateNestedObject(updatedData, keys.concat(lastKey), newFieldName, editValue);
+            updateNestedObject(updatedData, keys.concat(lastKey), newFieldName, newFieldValue);
 
             setData(updatedData);
             await set(ref(firebaseTools.database, path), parentObject[lastKey]);
@@ -102,7 +106,7 @@ const NestedTable = () => {
             // Clear the input fields for this specific key
             setNewFieldInputs(prev => ({
                 ...prev,
-                [key]: { newField: '', newValue: '' } // Reset for the specific key
+                [path]: { newField: '', newValue: '' } // Reset for the specific key
             }));
 
             window.location.reload(); // 刷新頁面
@@ -258,8 +262,7 @@ const NestedTable = () => {
                                     }))}
                                 />
                                 <Button label="加入" onClick={() => {
-                                    console.log(parentKey);
-                                    handleAddField(parentKey, parentKey, newFieldInputs[parentKey]?.newField, newFieldInputs[parentKey]?.newValue);
+                                    handleAddField(parentKey, newFieldInputs[parentKey]?.newField, newFieldInputs[parentKey]?.newValue);
                                 }} />
                             </td>
                         </tr>

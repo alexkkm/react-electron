@@ -8,10 +8,9 @@ import "./App.css";
 import Desktop from "./components/Desktop";
 import DarkThemePage from "./components/darktheme";
 import TestingPage from "./components/TestingPage";
-import FirebasePage from "./components/FirebasePage";
 import NetworkPage from "./components/Network";
 import LocalStorageTutorial from "./tutorial/LocalStorage";
-import NewFirebasePage from "./components/NewFirebase";
+import FirebasePage from "./components/Firebase";
 import TutorialPage from "./components/TutorialPage";
 
 // The main componenet of the app
@@ -34,7 +33,7 @@ function App() {
 				/>
 				<Route
 					path="/firebase"
-					element={<NewFirebasePage />} />
+					element={<FirebasePage />} />
 				<Route
 					path="/network"
 					element={<NetworkPage />} />
