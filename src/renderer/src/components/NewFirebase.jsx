@@ -68,20 +68,6 @@ export default NewFirebasePage;
 
 
 const NestedTable = () => {
-
-    const realdata = {
-        users: {
-            Alex: {
-                username: "Alex Kong",
-                email: "kwaiman.kong@gmail.com"
-            },
-            Wingy: {
-                username: "Wingy",
-                email: "wingy64@gmail.com"
-            }
-        }
-    };
-
     const [data, setData] = useState({});
 
     useEffect(() => {
@@ -95,44 +81,46 @@ const NestedTable = () => {
                     setData(snapshot.val());
                 }
             });
-        }
+        };
         fetchAllDataFromFirebase();
     }, []);
 
+    const renderTable = (obj, title) => {
+        return (
+            <div style={{ marginBottom: '20px' }}>
+                <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                        <tr>
+                            <th colSpan="2">{title}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {Object.entries(obj).map(([key, value]) => (
+                            <tr key={key}>
+                                <td>{key}</td>
+                                <td>
+                                    {typeof value === 'object' && value !== null ? (
+                                        renderTable(value, key) // Recursively render the nested table
+                                    ) : (
+                                        <span>{value}</span> // Display the value if it's not an object
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        );
+    };
+
     return (
         <div>
-            <h1>Nested Table Example</h1>
-            <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                    <tr>
-                        <th>Users</th>
-                        <th>User Details</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.users && Object.keys(data.users).map((userKey) => (
-                        <tr key={userKey}>
-                            <td>{userKey}</td>
-                            <td>
-                                <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                    <thead>
-                                        <tr>
-                                            <th>Username</th>
-                                            <th>Email</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>{data.users[userKey].username}</td>
-                                            <td>{data.users[userKey].email}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <h1 style={{ textAlign: 'center', paddingTop: '10px' }}>Firebase Realtime Database</h1>
+            {Object.keys(data).length === 0 ? ( // Check if data is empty
+                <p>Loading data...</p>
+            ) : (
+                Object.keys(data).map((key) => renderTable(data[key], key)) // Render top-level tables
+            )}
         </div>
     );
 };
