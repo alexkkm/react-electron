@@ -1,5 +1,5 @@
 // react package
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 
 // firebase package
@@ -68,41 +68,36 @@ export default NewFirebasePage;
 
 
 const NestedTable = () => {
-    /*
-    const data = [
-        {
-            name: "Alex",
-            information: { scores: { Chinese: 82, English: 83 }, result: "Pass" }
-        },
-        {
-            name: "Wingy",
-            information: { scores: { Chinese: 70, English: 99 }, result: "Pass" }
-        }
-    ];
 
-    */
-    const [data, setData] = useState([{
-        name: "Alex",
-        information: { scores: { Chinese: 82, English: 83 }, result: "Pass" }
-    },
-    {
-        name: "Wingy",
-        information: { scores: { Chinese: 70, English: 99 }, result: "Pass" }
-    }]);
+    const realdata = {
+        users: {
+            Alex: {
+                username: "Alex Kong",
+                email: "kwaiman.kong@gmail.com"
+            },
+            Wingy: {
+                username: "Wingy",
+                email: "wingy64@gmail.com"
+            }
+        }
+    };
+
+    const [data, setData] = useState({});
 
     useEffect(() => {
-        // create a reference to the Firebase Realtime Database
-        const databaseReference = ref(firebaseTools.database);
-        const path = "users";
-        // use get() for reading
-        get(child(databaseReference, path)).then((snapshot) => {
-            if (snapshot.exists()) {
-                console.log(snapshot.val());
-            }
-        })
-    })
+        const fetchAllDataFromFirebase = () => {
+            const databaseReference = ref(firebaseTools.database);
+            const path = "/";
 
-
+            get(child(databaseReference, path)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    console.log(snapshot.val());
+                    setData(snapshot.val());
+                }
+            });
+        }
+        fetchAllDataFromFirebase();
+    }, []);
 
     return (
         <div>
@@ -110,38 +105,26 @@ const NestedTable = () => {
             <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
                     <tr>
-                        {Object.keys(data[1]).map((key) => (
-                            <th key={key}>{key}</th>
-                        ))}
+                        <th>Users</th>
+                        <th>User Details</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((item, index) => (
-                        <tr key={index}>
-                            <td>{item.name}</td>
+                    {data.users && Object.keys(data.users).map((userKey) => (
+                        <tr key={userKey}>
+                            <td>{userKey}</td>
                             <td>
                                 <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr>
-                                            <th>Scores</th>
-                                            <th>Result</th>
+                                            <th>Username</th>
+                                            <th>Email</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>
-                                                <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                                    <tbody>
-                                                        {Object.keys(item.information.scores).map((subject) => (
-                                                            <tr key={subject}>
-                                                                <td>{subject}</td>
-                                                                <td>{item.information.scores[subject]}</td>
-                                                            </tr>
-                                                        ))}
-                                                    </tbody>
-                                                </table>
-                                            </td>
-                                            <td>{item.information.result}</td>
+                                            <td>{data.users[userKey].username}</td>
+                                            <td>{data.users[userKey].email}</td>
                                         </tr>
                                     </tbody>
                                 </table>
