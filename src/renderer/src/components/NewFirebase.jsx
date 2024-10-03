@@ -57,8 +57,7 @@ export default NewFirebasePage;
 // Nested Table
 const NestedTable = () => {
     const [data, setData] = useState({});
-    const [newField, setNewField] = useState('');
-    const [newValue, setNewValue] = useState('');
+    const [newFieldInputs, setNewFieldInputs] = useState({}); // State for new field inputs
     const [editStates, setEditStates] = useState({}); // 用於儲存每行的編輯狀態
 
     useEffect(() => {
@@ -76,13 +75,36 @@ const NestedTable = () => {
         fetchAllDataFromFirebase();
     }, []);
 
-    const handleAddField = async (key) => {
-        if (newField && newValue) {
-            const updatedData = { ...data, [key]: { ...data[key], [newField]: newValue } };
+    const handleAddField = async (path, key, newFieldName, editValue) => {
+        if (newFieldInputs[key]?.newField && newFieldInputs[key]?.newValue) {
+            const updatedData = { ...data };
+            const keys = path.split('/'); // 使用點來解析路徑
+            const lastKey = keys.pop(); // 獲取當前鍵
+            const parentPath = keys.join('.'); // 獲取父路徑
+
+            // Accessing the value dynamically using parentPath and lastKey
+            const parentObject = keys.reduce((obj, key) => obj[key], updatedData); // Navigate to the parent object
+
+
+            // Function to update the value in the nested object
+            function updateNestedObject(obj, keys, newFieldName, value) {
+                const parentObject = keys.reduce((accum, key) => accum[key], obj); // Navigate to the parent object
+                // Add the new field with the specified value
+                parentObject[newFieldName] = value;
+            }
+            console.log("try")
+            updateNestedObject(updatedData, keys.concat(lastKey), newFieldName, editValue);
+
             setData(updatedData);
-            setNewField('');
-            setNewValue('');
-            await set(ref(firebaseTools.database, key), updatedData[key]);
+            await set(ref(firebaseTools.database, path), parentObject[lastKey]);
+
+            alert("Successfully added")
+            // Clear the input fields for this specific key
+            setNewFieldInputs(prev => ({
+                ...prev,
+                [key]: { newField: '', newValue: '' } // Reset for the specific key
+            }));
+
             window.location.reload(); // 刷新頁面
         }
     };
@@ -218,18 +240,27 @@ const NestedTable = () => {
                                 <input
                                     type="text"
                                     placeholder="新欄位名稱"
-                                    value={newField}
-                                    onChange={(e) => setNewField(e.target.value)}
+                                    value={newFieldInputs[parentKey]?.newField || ''}
+                                    onChange={(e) => setNewFieldInputs(prev => ({
+                                        ...prev,
+                                        [parentKey]: { ...prev[parentKey], newField: e.target.value }
+                                    }))}
                                 />
                             </td>
                             <td>
                                 <input
                                     type="text"
                                     placeholder="新值"
-                                    value={newValue}
-                                    onChange={(e) => setNewValue(e.target.value)}
+                                    value={newFieldInputs[parentKey]?.newValue || ''}
+                                    onChange={(e) => setNewFieldInputs(prev => ({
+                                        ...prev,
+                                        [parentKey]: { ...prev[parentKey], newValue: e.target.value }
+                                    }))}
                                 />
-                                <Button label="加入" onClick={() => handleAddField(parentKey)} />
+                                <Button label="加入" onClick={() => {
+                                    console.log(parentKey);
+                                    handleAddField(parentKey, parentKey, newFieldInputs[parentKey]?.newField, newFieldInputs[parentKey]?.newValue);
+                                }} />
                             </td>
                         </tr>
                     </tbody>
