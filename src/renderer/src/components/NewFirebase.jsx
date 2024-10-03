@@ -85,24 +85,19 @@ const NestedTable = () => {
         fetchAllDataFromFirebase();
     }, []);
 
-    const renderTable = (obj, title) => {
+    const renderTable = (obj) => {
         return (
             <div style={{ marginBottom: '20px' }}>
                 <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead>
-                        <tr>
-                            <th colSpan="2">{title}</th>
-                        </tr>
-                    </thead>
                     <tbody>
                         {Object.entries(obj).map(([key, value]) => (
                             <tr key={key}>
                                 <td>{key}</td>
                                 <td>
                                     {typeof value === 'object' && value !== null ? (
-                                        renderTable(value, key) // Recursively render the nested table
+                                        renderTable(value) // 递归渲染嵌套表格
                                     ) : (
-                                        <span>{value}</span> // Display the value if it's not an object
+                                        <span>{value}</span> // 如果不是对象则显示值
                                     )}
                                 </td>
                             </tr>
@@ -116,10 +111,21 @@ const NestedTable = () => {
     return (
         <div>
             <h1 style={{ textAlign: 'center', paddingTop: '10px' }}>Firebase Realtime Database</h1>
-            {Object.keys(data).length === 0 ? ( // Check if data is empty
+            {Object.keys(data).length === 0 ? ( // 检查数据是否为空
                 <p>Loading data...</p>
             ) : (
-                Object.keys(data).map((key) => renderTable(data[key], key)) // Render top-level tables
+                <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <tbody>
+                        {Object.entries(data).map(([key, value]) => (
+                            <tr key={key}>
+                                <td>{key}</td> {/* 第一层字段名作为行显示 */}
+                                <td>
+                                    {renderTable(value)} {/* 渲染每个字段的内容 */}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             )}
         </div>
     );
