@@ -114,10 +114,45 @@ const NestedTable = () => {
     };
 
     const handleDeleteField = async (path) => {
-        // Delete data from Realtime Database
-        await deleteData(path);
-        alert("Sucessfully deleted")
-        window.location.reload(); // 刷新頁面
+        const databaseReference = ref(firebaseTools.database);
+        const keys = path.split('/'); // Split the path
+        const parentPath = keys.slice(0, -1).join('/'); // Get the parent path
+        const fieldNameToDelete = keys[keys.length - 1]; // Get the last key (the field to delete)
+
+        // Check if the parent has any other fields
+        const parentSnapshot = await get(child(databaseReference, parentPath));
+        if (parentSnapshot.exists()) {
+            const parentData = parentSnapshot.val();
+            delete parentData[fieldNameToDelete]; // Remove the field
+
+            // Check if any fields remain in the parent object
+            if (Object.keys(parentData).length === 0) {
+                // If no fields left, do not delete the parent; alert the user if needed
+                alert("Parent object will remain as it has no fields left.");
+                return;
+            }
+        }
+
+        // Proceed to remove the field
+        await remove(child(databaseReference, path))
+            .then(() => {
+                console.log("Data deleted successfully");
+                alert("Successfully deleted");
+                // Update the local state without refreshing the page
+                setData(prevData => {
+                    const updatedData = { ...prevData };
+                    const parentKeys = path.split('/').slice(0, -1);
+                    let parent = updatedData;
+                    for (const key of parentKeys) {
+                        parent = parent[key];
+                    }
+                    delete parent[fieldNameToDelete];
+                    return updatedData;
+                });
+            })
+            .catch((error) => {
+                console.error("Error deleting data:", error);
+            });
     };
 
     const handleEditField = async (path, newFieldName, editValue) => {
