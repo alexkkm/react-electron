@@ -1,6 +1,6 @@
 //TODO 
 /*
-1. fix the issue that when the last field of the parent deleteData, the parent will also be removed accidentally
+1. fix the issue that when new parnet added, can give option to add table/ choose data type for its field
 2. fix the issue of input field bug after a single successful operation
 */
 
@@ -205,7 +205,10 @@ const NestedTable = () => {
 
             try {
                 // 使用提供的 set 函數更新資料
-                await set(ref(firebaseTools.database, path), parentObject[lastKey]);
+                console.log("path:" + "path" + " parentObject[lastKey]:" + parentObject[lastKey])   // TODO: "parentObject[lastKey]" is undefined, since the "parentObject[lastKey]" maybe deleted when newFieldName is different from lastKey
+                //TODO: try to just update the value in the path, but not update from the root
+                await set(ref(firebaseTools.database, "/"), updatedData);
+
                 alert("Sucessfully updated")
                 window.location.reload(); // 刷新頁面
             } catch (error) {
