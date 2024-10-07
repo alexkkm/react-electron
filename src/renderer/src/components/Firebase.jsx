@@ -54,6 +54,7 @@ const FirebasePage = () => {
             </div>
 
             <Button label={"Back to last page"} onClick={() => window.history.back()} />
+
         </div>
     );
 };
@@ -63,14 +64,13 @@ export default FirebasePage;
 // Nested Table
 const NestedTable = () => {
     const [data, setData] = useState({});
-    const [newFieldInputs, setNewFieldInputs] = useState({}); // State for new field inputs
-    const [editStates, setEditStates] = useState({}); // 用於儲存每行的編輯狀態
+    const [newFieldInputs, setNewFieldInputs] = useState({});
+    const [editStates, setEditStates] = useState({});
+    const [newFieldType, setNewFieldType] = useState({});
+    const [jsonFields, setJsonFields] = useState({});
+    const [newJsonKey, setNewJsonKey] = useState(''); // Moved to the main component
+    const [newJsonValue, setNewJsonValue] = useState(''); // Moved to the main component
 
-
-    const [newFieldType, setNewFieldType] = useState({}); // State for field types
-    const [jsonFields, setJsonFields] = useState({}); // State for JSON fields
-
-    // Fetch data from Firebase on component mount
     useEffect(() => {
         const fetchAllDataFromFirebase = async () => {
             const databaseReference = ref(firebaseTools.database);
@@ -98,8 +98,14 @@ const NestedTable = () => {
             const lastKey = keys.pop();
             const parentObject = keys.reduce((obj, key) => obj[key], updatedData);
 
+            // Ensure the parent object is initialized
+            if (!parentObject[lastKey]) {
+                parentObject[lastKey] = {}; // Initialize as an object if it doesn't exist
+            }
+
             // Add the JSON object to the parent object
-            parentObject[lastKey] = jsonFields[path];
+            parentObject[lastKey] = { ...parentObject[lastKey], ...jsonFields[path] };
+
             setData(updatedData);
             await set(ref(firebaseTools.database, path), parentObject[lastKey]);
 
@@ -110,9 +116,9 @@ const NestedTable = () => {
             }));
             setJsonFields(prev => ({
                 ...prev,
-                [path]: {} // Reset for the specific key
+                [path]: {}
             }));
-            window.location.reload(); // Refresh the page
+            // Avoid page reload and rely on state update
         }
     };
 
@@ -243,22 +249,34 @@ const NestedTable = () => {
             const lastKey = keys.pop();
             const parentObject = keys.reduce((obj, key) => obj[key], updatedData);
 
+            // Ensure the parent object is initialized
+            if (!parentObject[lastKey]) {
+                parentObject[lastKey] = {}; // Initialize as an object if it doesn't exist
+            }
+
             // Determine the value type
             if (newFieldType[path] === "object") {
-                parentObject[lastKey][newFieldName] = newFieldValue; // Add the field to the object
+                // Ensure the field to hold JSON is initialized
+                if (!parentObject[lastKey][newFieldName]) {
+                    parentObject[lastKey][newFieldName] = {}; // Initialize as an object if it doesn't exist
+                }
+                // Add the new JSON field as a child of the specified field
+                parentObject[lastKey][newFieldName] = { ...jsonFields[path] }; // Add the entire JSON object
             } else {
                 parentObject[lastKey][newFieldName] = newFieldValue; // Add the new field directly
             }
 
             setData(updatedData);
-            await set(ref(firebaseTools.database, path), parentObject[lastKey]);
+            await set(ref(firebaseTools.database, path), updatedData);
 
             alert("Successfully added");
             setNewFieldInputs(prev => ({
                 ...prev,
                 [path]: { newField: '', newValue: '' }
             }));
-            window.location.reload(); // Refresh the page
+            // Reset JSON key and value
+            setNewJsonKey('');
+            setNewJsonValue('');
         }
     };
 
@@ -288,7 +306,7 @@ const NestedTable = () => {
                             if (selectedType !== "object") {
                                 setJsonFields(prev => ({
                                     ...prev,
-                                    [parentKey]: {} // Reset for the specific key
+                                    [parentKey]: {}
                                 }));
                             }
                         }}
@@ -298,9 +316,24 @@ const NestedTable = () => {
                         <option value="number">Number</option>
                         <option value="object">Object (JSON)</option>
                     </select>
-                    {newFieldType[parentKey] === "object" ? (
+                    {newFieldType[parentKey] === "object" && (
                         <>
-                            <Button label="Add JSON Field" onClick={() => handleAddObjectField(parentKey)} />
+                            <Button
+                                label="Add JSON Field"
+                                onClick={() => {
+                                    // Add the new JSON field on button click
+                                    setJsonFields(prev => ({
+                                        ...prev,
+                                        [parentKey]: {
+                                            ...prev[parentKey],
+                                            [newJsonKey]: newJsonValue // Use the state for the new key and value
+                                        }
+                                    }));
+                                    // Reset the inputs
+                                    setNewJsonKey('');
+                                    setNewJsonValue('');
+                                }}
+                            />
                             <table>
                                 <tbody>
                                     {Object.entries(jsonFields[parentKey] || {}).map(([key, value]) => (
@@ -314,39 +347,24 @@ const NestedTable = () => {
                                             <input
                                                 type="text"
                                                 placeholder="New Key"
-                                                onChange={(e) => {
-                                                    const newKey = e.target.value;
-                                                    setJsonFields(prev => ({
-                                                        ...prev,
-                                                        [parentKey]: {
-                                                            ...prev[parentKey],
-                                                            [newKey]: '' // Initialize with empty string
-                                                        }
-                                                    }));
-                                                }}
+                                                value={newJsonKey}
+                                                onChange={(e) => setNewJsonKey(e.target.value)} // Update local state
                                             />
                                         </td>
                                         <td>
                                             <input
                                                 type="text"
                                                 placeholder="New Value"
-                                                onChange={(e) => {
-                                                    const newKey = Object.keys(jsonFields[parentKey] || {}).pop();
-                                                    setJsonFields(prev => ({
-                                                        ...prev,
-                                                        [parentKey]: {
-                                                            ...prev[parentKey],
-                                                            [newKey]: e.target.value // Update the last key's value
-                                                        }
-                                                    }));
-                                                }}
+                                                value={newJsonValue}
+                                                onChange={(e) => setNewJsonValue(e.target.value)} // Update local state
                                             />
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </>
-                    ) : (
+                    )}
+                    {newFieldType[parentKey] !== "object" && (
                         <input
                             type="text"
                             placeholder="新值"
@@ -357,7 +375,10 @@ const NestedTable = () => {
                             }))}
                         />
                     )}
-                    <Button label="加入" onClick={() => handleFieldAdd(parentKey, newFieldInputs[parentKey]?.newField, newFieldInputs[parentKey]?.newValue)} />
+                    <Button
+                        label="加入"
+                        onClick={() => handleFieldAdd(parentKey, newFieldInputs[parentKey]?.newField, newFieldInputs[parentKey]?.newValue)}
+                    />
                 </td>
             </tr>
         );
@@ -433,7 +454,7 @@ const NestedTable = () => {
                             </tr>
                         ))}
                         {/* Add the new field input row */}
-                        {renderAddFieldRow('/')} {/* Pass appropriate parent key */}
+                        {renderAddFieldRow('/')}
                     </tbody>
                 </table>
             )}
