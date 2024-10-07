@@ -214,7 +214,7 @@ const NestedTable = () => {
 
             try {
                 // 使用提供的 set 函數更新資料
-                console.log("path:" + "path" + " parentObject[lastKey]:" + parentObject[lastKey])   // TODO: "parentObject[lastKey]" is undefined, since the "parentObject[lastKey]" maybe deleted when newFieldName is different from lastKey
+                console.log("path:" + path + " parentObject[lastKey]:" + parentObject[lastKey])   // TODO: "parentObject[lastKey]" is undefined, since the "parentObject[lastKey]" maybe deleted when newFieldName is different from lastKey
                 //TODO: try to just update the value in the path, but not update from the root
                 await set(ref(firebaseTools.database, "/"), updatedData);
 
@@ -242,6 +242,7 @@ const NestedTable = () => {
             [key]: { ...prev[key], [field]: value }
         }));
     };
+
     const handleFieldAdd = async (path, newFieldName, newFieldValue) => {
         if (newFieldInputs[path]?.newField && newFieldType[path]) {
             const updatedData = { ...data };
@@ -267,7 +268,9 @@ const NestedTable = () => {
             }
 
             setData(updatedData);
-            await set(ref(firebaseTools.database, path), updatedData);
+            console.log("path:" + path + " updatedData:" + JSON.stringify(updatedData))
+            //TODO: try not to set() for the whole data
+            await set(ref(firebaseTools.database, "/"), updatedData);
 
             alert("Successfully added");
             setNewFieldInputs(prev => ({
@@ -318,50 +321,8 @@ const NestedTable = () => {
                     </select>
                     {newFieldType[parentKey] === "object" && (
                         <>
-                            <Button
-                                label="Add JSON Field"
-                                onClick={() => {
-                                    // Add the new JSON field on button click
-                                    setJsonFields(prev => ({
-                                        ...prev,
-                                        [parentKey]: {
-                                            ...prev[parentKey],
-                                            [newJsonKey]: newJsonValue // Use the state for the new key and value
-                                        }
-                                    }));
-                                    // Reset the inputs
-                                    setNewJsonKey('');
-                                    setNewJsonValue('');
-                                }}
-                            />
-                            <table>
-                                <tbody>
-                                    {Object.entries(jsonFields[parentKey] || {}).map(([key, value]) => (
-                                        <tr key={key}>
-                                            <td>{key}</td>
-                                            <td>{value}</td>
-                                        </tr>
-                                    ))}
-                                    <tr>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                placeholder="New Key"
-                                                value={newJsonKey}
-                                                onChange={(e) => setNewJsonKey(e.target.value)} // Update local state
-                                            />
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                placeholder="New Value"
-                                                value={newJsonValue}
-                                                onChange={(e) => setNewJsonValue(e.target.value)} // Update local state
-                                            />
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <br />
+                            <p> Please enter data after creating the JSON first</p>
                         </>
                     )}
                     {newFieldType[parentKey] !== "object" && (
