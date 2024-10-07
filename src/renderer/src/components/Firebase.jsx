@@ -66,50 +66,53 @@ const NestedTable = () => {
     const [newFieldInputs, setNewFieldInputs] = useState({}); // State for new field inputs
     const [editStates, setEditStates] = useState({}); // 用於儲存每行的編輯狀態
 
+
+    const [newFieldType, setNewFieldType] = useState({}); // State for field types
+    const [jsonFields, setJsonFields] = useState({}); // State for JSON fields
+
+    // Fetch data from Firebase on component mount
     useEffect(() => {
-        const fetchAllDataFromFirebase = () => {
+        const fetchAllDataFromFirebase = async () => {
             const databaseReference = ref(firebaseTools.database);
             const path = "/";
-
-            get(child(databaseReference, path)).then((snapshot) => {
+            try {
+                const snapshot = await get(child(databaseReference, path));
                 if (snapshot.exists()) {
                     console.log(snapshot.val());
                     setData(snapshot.val());
+                } else {
+                    console.log("No data available");
                 }
-            });
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
         };
         fetchAllDataFromFirebase();
     }, []);
 
-    const handleAddField = async (path, newFieldName, newFieldValue) => {
-        if (newFieldInputs[path]?.newField && newFieldInputs[path]?.newValue) {
+    // Function to add a new field of type object
+    const handleAddObjectField = async (path) => {
+        if (jsonFields[path]) {
             const updatedData = { ...data };
-            const keys = path.split('/'); // 使用點來解析路徑
-            const lastKey = keys.pop(); // 獲取當前鍵
+            const keys = path.split('/');
+            const lastKey = keys.pop();
+            const parentObject = keys.reduce((obj, key) => obj[key], updatedData);
 
-            // Accessing the value dynamically using parentPath and lastKey
-            const parentObject = keys.reduce((obj, key) => obj[key], updatedData); // Navigate to the parent object
-
-            // Function to update the value in the nested object
-            function updateNestedObject(obj, keys, newFieldName, value) {
-                const parentObject = keys.reduce((accum, key) => accum[key], obj); // Navigate to the parent object
-                // Add the new field with the specified value
-                parentObject[newFieldName] = value;
-            }
-            console.log("try")
-            updateNestedObject(updatedData, keys.concat(lastKey), newFieldName, newFieldValue);
-
+            // Add the JSON object to the parent object
+            parentObject[lastKey] = jsonFields[path];
             setData(updatedData);
             await set(ref(firebaseTools.database, path), parentObject[lastKey]);
 
-            alert("Successfully added")
-            // Clear the input fields for this specific key
+            alert("Successfully added object field");
             setNewFieldInputs(prev => ({
                 ...prev,
-                [path]: { newField: '', newValue: '' } // Reset for the specific key
+                [path]: { newField: '', newValue: '' }
             }));
-
-            window.location.reload(); // 刷新頁面
+            setJsonFields(prev => ({
+                ...prev,
+                [path]: {} // Reset for the specific key
+            }));
+            window.location.reload(); // Refresh the page
         }
     };
 
@@ -233,6 +236,132 @@ const NestedTable = () => {
             [key]: { ...prev[key], [field]: value }
         }));
     };
+    const handleFieldAdd = async (path, newFieldName, newFieldValue) => {
+        if (newFieldInputs[path]?.newField && newFieldType[path]) {
+            const updatedData = { ...data };
+            const keys = path.split('/');
+            const lastKey = keys.pop();
+            const parentObject = keys.reduce((obj, key) => obj[key], updatedData);
+
+            // Determine the value type
+            if (newFieldType[path] === "object") {
+                parentObject[lastKey][newFieldName] = newFieldValue; // Add the field to the object
+            } else {
+                parentObject[lastKey][newFieldName] = newFieldValue; // Add the new field directly
+            }
+
+            setData(updatedData);
+            await set(ref(firebaseTools.database, path), parentObject[lastKey]);
+
+            alert("Successfully added");
+            setNewFieldInputs(prev => ({
+                ...prev,
+                [path]: { newField: '', newValue: '' }
+            }));
+            window.location.reload(); // Refresh the page
+        }
+    };
+
+    const renderAddFieldRow = (parentKey) => {
+        return (
+            <tr>
+                <td>
+                    <input
+                        type="text"
+                        placeholder="新欄位名稱"
+                        value={newFieldInputs[parentKey]?.newField || ''}
+                        onChange={(e) => setNewFieldInputs(prev => ({
+                            ...prev,
+                            [parentKey]: { ...prev[parentKey], newField: e.target.value }
+                        }))}
+                    />
+                </td>
+                <td>
+                    <select
+                        onChange={(e) => {
+                            const selectedType = e.target.value;
+                            setNewFieldType(prev => ({
+                                ...prev,
+                                [parentKey]: selectedType
+                            }));
+                            // Reset JSON fields when type changes
+                            if (selectedType !== "object") {
+                                setJsonFields(prev => ({
+                                    ...prev,
+                                    [parentKey]: {} // Reset for the specific key
+                                }));
+                            }
+                        }}
+                    >
+                        <option value="">Select Type</option>
+                        <option value="string">String</option>
+                        <option value="number">Number</option>
+                        <option value="object">Object (JSON)</option>
+                    </select>
+                    {newFieldType[parentKey] === "object" ? (
+                        <>
+                            <Button label="Add JSON Field" onClick={() => handleAddObjectField(parentKey)} />
+                            <table>
+                                <tbody>
+                                    {Object.entries(jsonFields[parentKey] || {}).map(([key, value]) => (
+                                        <tr key={key}>
+                                            <td>{key}</td>
+                                            <td>{value}</td>
+                                        </tr>
+                                    ))}
+                                    <tr>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                placeholder="New Key"
+                                                onChange={(e) => {
+                                                    const newKey = e.target.value;
+                                                    setJsonFields(prev => ({
+                                                        ...prev,
+                                                        [parentKey]: {
+                                                            ...prev[parentKey],
+                                                            [newKey]: '' // Initialize with empty string
+                                                        }
+                                                    }));
+                                                }}
+                                            />
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                placeholder="New Value"
+                                                onChange={(e) => {
+                                                    const newKey = Object.keys(jsonFields[parentKey] || {}).pop();
+                                                    setJsonFields(prev => ({
+                                                        ...prev,
+                                                        [parentKey]: {
+                                                            ...prev[parentKey],
+                                                            [newKey]: e.target.value // Update the last key's value
+                                                        }
+                                                    }));
+                                                }}
+                                            />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </>
+                    ) : (
+                        <input
+                            type="text"
+                            placeholder="新值"
+                            value={newFieldInputs[parentKey]?.newValue || ''}
+                            onChange={(e) => setNewFieldInputs(prev => ({
+                                ...prev,
+                                [parentKey]: { ...prev[parentKey], newValue: e.target.value }
+                            }))}
+                        />
+                    )}
+                    <Button label="加入" onClick={() => handleFieldAdd(parentKey, newFieldInputs[parentKey]?.newField, newFieldInputs[parentKey]?.newValue)} />
+                </td>
+            </tr>
+        );
+    };
 
     const renderTable = (obj, parentKey) => {
         return (
@@ -240,7 +369,7 @@ const NestedTable = () => {
                 <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
                     <tbody>
                         {Object.entries(obj).map(([key, value]) => {
-                            const currentPath = `${parentKey}/${key}`; // 獲取當前路徑
+                            const currentPath = `${parentKey}/${key}`;
 
                             return (
                                 <tr key={key}>
@@ -250,7 +379,7 @@ const NestedTable = () => {
                                     </td>
                                     <td>
                                         {typeof value === 'object' && value !== null ? (
-                                            renderTable(value, currentPath) // 递归渲染嵌套表格
+                                            renderTable(value, currentPath) // Recursively render nested tables
                                         ) : (
                                             <span>{value}</span>
                                         )}
@@ -276,34 +405,8 @@ const NestedTable = () => {
                                 </tr>
                             );
                         })}
-                        {/* 新增行以添加新欄位 */}
-                        <tr>
-                            <td>
-                                <input
-                                    type="text"
-                                    placeholder="新欄位名稱"
-                                    value={newFieldInputs[parentKey]?.newField || ''}
-                                    onChange={(e) => setNewFieldInputs(prev => ({
-                                        ...prev,
-                                        [parentKey]: { ...prev[parentKey], newField: e.target.value }
-                                    }))}
-                                />
-                            </td>
-                            <td>
-                                <input
-                                    type="text"
-                                    placeholder="新值"
-                                    value={newFieldInputs[parentKey]?.newValue || ''}
-                                    onChange={(e) => setNewFieldInputs(prev => ({
-                                        ...prev,
-                                        [parentKey]: { ...prev[parentKey], newValue: e.target.value }
-                                    }))}
-                                />
-                                <Button label="加入" onClick={() => {
-                                    handleAddField(parentKey, newFieldInputs[parentKey]?.newField, newFieldInputs[parentKey]?.newValue);
-                                }} />
-                            </td>
-                        </tr>
+                        {/* Render the row to add new fields */}
+                        {renderAddFieldRow(parentKey)}
                     </tbody>
                 </table>
             </div>
@@ -313,7 +416,7 @@ const NestedTable = () => {
     return (
         <div>
             <h1 style={{ textAlign: 'center', paddingTop: '10px' }}>Firebase Realtime Database</h1>
-            {Object.keys(data).length === 0 ? ( // 检查数据是否为空
+            {Object.keys(data).length === 0 ? (
                 <p>Loading data...</p>
             ) : (
                 <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -325,45 +428,15 @@ const NestedTable = () => {
                                     <Button label="More" onClick={() => handleMoreClick(key)} />
                                 </td>
                                 <td>
-                                    {editStates[key]?.visible && (
-                                        <div>
-                                            <input
-                                                type="text"
-                                                placeholder="修改欄位名稱"
-                                                value={editStates[key]?.field || ''}
-                                                onChange={(e) => handleEditChange(key, 'field', e.target.value)}
-                                            />
-                                            <input
-                                                type="text"
-                                                placeholder="修改值"
-                                                value={editStates[key]?.value || ''}
-                                                onChange={(e) => handleEditChange(key, 'value', e.target.value)}
-                                            />
-                                            <Button label="刪除" onClick={() => handleDeleteField(key)} />
-                                            <Button label="提交修改" onClick={() => handleEditField(key, editStates[key]?.field, editStates[key]?.value)} />
-                                        </div>
-                                    )}
-                                </td>
-                                <td>
-                                    {renderTable(value, key)} {/* 渲染每个字段的内容 */}
+                                    {renderTable(value, key)} {/* Render the nested table */}
                                 </td>
                             </tr>
                         ))}
+                        {/* Add the new field input row */}
+                        {renderAddFieldRow('/')} {/* Pass appropriate parent key */}
                     </tbody>
                 </table>
             )}
         </div>
     );
-};
-
-// Delete data from Realtime Database
-const deleteData = async (path) => {
-    const databaseReference = ref(firebaseTools.database);
-    await remove(child(databaseReference, path))
-        .then(() => {
-            console.log("Data deleted successfully");
-        })
-        .catch((error) => {
-            console.error("Error deleting data:", error);
-        });
 };
