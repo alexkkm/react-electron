@@ -1,0 +1,65 @@
+.Dropdown {
+    display: inline-block; /* Allow it to be inline with other elements */
+    margin: 0 auto; /* Center the Dropdown div within its parent */
+    width: auto; /* Width is auto for the dropdown itself */
+}
+
+.dropdown {
+    color: #00f0ff; /* Text color for the dropdown */
+    background-color: rgba(0, 240, 255, 0.1); /* Light background color for the dropdown */
+    border: 1px solid #00f0ff; /* Border color for the dropdown */
+    border-radius: 5px; /* Rounded corners for the dropdown */
+    padding: 0.5rem 1rem; /* Padding inside the dropdown */
+    clip-path: polygon( /* Define a custom clipping path similar to Table */
+        0 0,
+        100% 0,
+        100% calc(100% - 1rem + 5px),
+        calc(100% - 1rem + 5px) 100%,
+        0 100%
+    );
+    position: relative; /* Needed for the ::before pseudo-element */
+    overflow: hidden; /* Hide any overflow from the clip-path */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.3s, transform 0.3s; /* Smooth transition for hover effects */
+    font-family: "Rajdhani-Bold", sans-serif; /* Match font style with Button and Table */
+    font-size: 100%; /* Match font size with Button and Table */
+}
+
+.dropdown:hover {
+    background-color: rgba(0, 240, 255, 0.2); /* Darker background on hover */
+    transform: scale(1.05); /* Slightly enlarge the dropdown on hover */
+}
+
+.dropdown:focus {
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 5px #00f0ff; /* Highlight dropdown when focused */
+}
+
+/* Pseudo-element for additional styling */
+.Dropdown::before {
+    background-color: #00f0ff;
+    bottom: 3px; /* adjust this value to position the pseudo-element at the bottom of the dropdown */
+    content: "";
+    display: block;
+    height: 3px;
+    position: absolute;
+    right: -1px; /* adjust this value to position the pseudo-element at the right edge of the dropdown */
+    top: auto;
+    transform: rotate(-45deg);
+    width: 12px; /* adjust this value to match the width of the dropdown */
+    z-index: 100;
+  }
+
+.Dropdown::before:hover {
+    transform: rotate(-45deg) scale(1.05); /* Add this rule to transform the pseudo-element on hover */
+}
+
+/* Style for options when dropdown is active */
+.dropdown:focus option {
+    background-color: #00191d; /* Option background when dropdown is focused */
+    color: #00f0ff; /* Change text color for visibility */
+}
+
+.dropdown:focus option:hover {
+    background-color: white; /* Hover effect for options */
+}

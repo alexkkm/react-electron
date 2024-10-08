@@ -1,38 +1,25 @@
-//TODO 
-/*
-1. fix the issue that when new parnet added, can give option to add table/ choose data type for its field
-2. fix the issue of input field bug after a single successful operation
-*/
-
 // react package
-import React, { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 
 // firebase package
 import { getDatabase, ref, set, get, child, update, remove } from "firebase/database";
 
 // the "auth" is used for the functions from package "firebase/auth"
-import firebaseTools from "../assets/firebase"
-
+import firebaseTools from "../assets/firebase";
 import firebaseImagePath from "../assets/firebase-Icon.png";
-
 import Button from './Button';
-
 import "./FirebasePage.css";
+import Dropdown from './Dropdown';
 
 const FirebasePage = () => {
-
     // Write to Realtime Database
     const writeData = async (path, content) => {
-        // use set() for writing
-        await set(ref(firebaseTools.database, path), content);  //use getDatabase() to replace firebasetools.database here is also fine
-        console.log("Success")
-    }
+        await set(ref(firebaseTools.database, path), content);
+        console.log("Success");
+    };
 
     const readData = async (path) => {
-        // create a reference to the Firebase Realtime Database
         const databaseReference = ref(firebaseTools.database);
-        // use get() for reading
         get(child(databaseReference, path)).then((snapshot) => {
             if (snapshot.exists()) {
                 console.log(snapshot.val());
@@ -42,19 +29,16 @@ const FirebasePage = () => {
         }).catch((error) => {
             console.error(error);
         });
-    }
+    };
 
     return (
         <div className="firebasePage">
             <img src={firebaseImagePath} className="firebaseImage" />
             <p>Trying the real firebase page</p>
-
             <div className="Table">
                 <NestedTable />
             </div>
-
             <Button label={"Back to last page"} onClick={() => window.history.back()} />
-
         </div>
     );
 };
@@ -68,8 +52,7 @@ const NestedTable = () => {
     const [editStates, setEditStates] = useState({});
     const [newFieldType, setNewFieldType] = useState({});
     const [jsonFields, setJsonFields] = useState({});
-    const [newJsonKey, setNewJsonKey] = useState(''); // Moved to the main component
-    const [newJsonValue, setNewJsonValue] = useState(''); // Moved to the main component
+    const [selectedTypes, setSelectedTypes] = useState({});
 
     useEffect(() => {
         const fetchAllDataFromFirebase = async () => {
@@ -98,14 +81,11 @@ const NestedTable = () => {
             const lastKey = keys.pop();
             const parentObject = keys.reduce((obj, key) => obj[key], updatedData);
 
-            // Ensure the parent object is initialized
             if (!parentObject[lastKey]) {
-                parentObject[lastKey] = {}; // Initialize as an object if it doesn't exist
+                parentObject[lastKey] = {};
             }
 
-            // Add the JSON object to the parent object
             parentObject[lastKey] = { ...parentObject[lastKey], ...jsonFields[path] };
-
             setData(updatedData);
             await set(ref(firebaseTools.database, path), parentObject[lastKey]);
 
@@ -118,36 +98,29 @@ const NestedTable = () => {
                 ...prev,
                 [path]: {}
             }));
-            // Avoid page reload and rely on state update
         }
     };
 
     const handleDeleteField = async (path) => {
         const databaseReference = ref(firebaseTools.database);
-        const keys = path.split('/'); // Split the path
-        const parentPath = keys.slice(0, -1).join('/'); // Get the parent path
-        const fieldNameToDelete = keys[keys.length - 1]; // Get the last key (the field to delete)
+        const keys = path.split('/');
+        const parentPath = keys.slice(0, -1).join('/');
+        const fieldNameToDelete = keys[keys.length - 1];
 
-        // Check if the parent has any other fields
         const parentSnapshot = await get(child(databaseReference, parentPath));
         if (parentSnapshot.exists()) {
             const parentData = parentSnapshot.val();
-            delete parentData[fieldNameToDelete]; // Remove the field
-
-            // Check if any fields remain in the parent object
+            delete parentData[fieldNameToDelete];
             if (Object.keys(parentData).length === 0) {
-                // If no fields left, do not delete the parent; alert the user if needed
                 alert("Parent object will remain as it has no fields left.");
                 return;
             }
         }
 
-        // Proceed to remove the field
         await remove(child(databaseReference, path))
             .then(() => {
                 console.log("Data deleted successfully");
                 alert("Successfully deleted");
-                // Update the local state without refreshing the page
                 setData(prevData => {
                     const updatedData = { ...prevData };
                     const parentKeys = path.split('/').slice(0, -1);
@@ -164,62 +137,33 @@ const NestedTable = () => {
             });
     };
 
-    const handleEditField = async (path, newFieldName, editValue) => {
+    const handleEditField = async (path, newFieldName, editValue, selectedType) => {
         if (newFieldName !== undefined && editValue !== undefined) {
             const updatedData = { ...data };
-            const keys = path.split('/'); // 使用點來解析路徑
-            const lastKey = keys.pop(); // 獲取當前鍵
-            const parentPath = keys.join('.'); // 獲取父路徑
+            const keys = path.split('/');
+            const lastKey = keys.pop();
+            const parentObject = keys.reduce((obj, key) => obj[key], updatedData);
 
-            // Accessing the value dynamically using parentPath and lastKey
-            const parentObject = keys.reduce((obj, key) => obj[key], updatedData); // Navigate to the parent object
-
-            // Function to update the value in the nested object
-            function updateNestedObject(obj, keys, newFieldName, value) {
-                const lastKey = keys.pop(); // Get the last key
-                const parentObject = keys.reduce((accum, key) => accum[key], obj); // Navigate to the parent object
-
-                // Check if the new field name is different
-                if (newFieldName !== lastKey) {
-                    // Delete the old key if it's different
-                    delete parentObject[lastKey];
-                    // Add the new field with the specified value
-                    parentObject[newFieldName] = value;
-                } else {
-                    // If the names are the same, just update the value
-                    parentObject[lastKey] = value;
-                }
-            }
-
-            // 确保 parentPath 在 updatedData 中存在
             if (!parentObject[lastKey]) {
-                console.error("Parent path does not exist in updatedData:", parentPath);
-                return; // 若不存在，提前返回
+                console.error("Parent path does not exist in updatedData:", path);
+                return;
             }
 
-            // 僅更新當前鍵的值
+            if (selectedType === 'number') {
+                editValue = Number(editValue);
+            }
+
             if (newFieldName !== lastKey) {
-                // 如果新的欄位名稱不同於原來的，將原來的欄位刪除
                 delete parentObject[lastKey];
-                // Update the nested object using the function
-                updateNestedObject(updatedData, keys.concat(lastKey), newFieldName, editValue); // Update the value
-            } else {
-                // 如果名稱沒有改變，則只更新值
-                // Update the nested object using the function
-                updateNestedObject(updatedData, keys.concat(lastKey), newFieldName, editValue); // Update the value
             }
+            parentObject[newFieldName] = editValue;
 
-            // ready to update
             setData(updatedData);
 
             try {
-                // 使用提供的 set 函數更新資料
-                console.log("path:" + path + " parentObject[lastKey]:" + parentObject[lastKey])   // TODO: "parentObject[lastKey]" is undefined, since the "parentObject[lastKey]" maybe deleted when newFieldName is different from lastKey
-                //TODO: try to just update the value in the path, but not update from the root
-                await set(ref(firebaseTools.database, "/"), updatedData);
-
-                alert("Sucessfully updated")
-                window.location.reload(); // 刷新頁面
+                await set(ref(firebaseTools.database, path), editValue);
+                alert("Successfully updated");
+                window.location.reload();
             } catch (error) {
                 console.error("Error editing field:", error);
                 alert("Failed to edit field. Please try again.");
@@ -236,10 +180,13 @@ const NestedTable = () => {
         }));
     };
 
-    const handleEditChange = (key, field, value) => {
-        setEditStates(prev => ({
+    const handleEditChange = (path, field, value) => {
+        setEditStates((prev) => ({
             ...prev,
-            [key]: { ...prev[key], [field]: value }
+            [path]: {
+                ...prev[path],
+                [field]: value
+            }
         }));
     };
 
@@ -250,26 +197,20 @@ const NestedTable = () => {
             const lastKey = keys.pop();
             const parentObject = keys.reduce((obj, key) => obj[key], updatedData);
 
-            // Ensure the parent object is initialized
             if (!parentObject[lastKey]) {
-                parentObject[lastKey] = {}; // Initialize as an object if it doesn't exist
+                parentObject[lastKey] = {};
             }
 
-            // Determine the value type
             if (newFieldType[path] === "object") {
-                // Ensure the field to hold JSON is initialized
                 if (!parentObject[lastKey][newFieldName]) {
-                    parentObject[lastKey][newFieldName] = {}; // Initialize as an object if it doesn't exist
+                    parentObject[lastKey][newFieldName] = {};
                 }
-                // Add the new JSON field as a child of the specified field
-                parentObject[lastKey][newFieldName] = { ...jsonFields[path] }; // Add the entire JSON object
+                parentObject[lastKey][newFieldName] = { ...jsonFields[path] };
             } else {
-                parentObject[lastKey][newFieldName] = newFieldValue; // Add the new field directly
+                parentObject[lastKey][newFieldName] = newFieldValue;
             }
 
             setData(updatedData);
-            console.log("path:" + path + " updatedData:" + JSON.stringify(updatedData))
-            //TODO: try not to set() for the whole data
             await set(ref(firebaseTools.database, "/"), updatedData);
 
             alert("Successfully added");
@@ -277,9 +218,6 @@ const NestedTable = () => {
                 ...prev,
                 [path]: { newField: '', newValue: '' }
             }));
-            // Reset JSON key and value
-            setNewJsonKey('');
-            setNewJsonValue('');
         }
     };
 
@@ -298,14 +236,19 @@ const NestedTable = () => {
                     />
                 </td>
                 <td>
-                    <select
+                    <Dropdown
+                        options={[
+                            { value: '', label: 'Select Type' },
+                            { value: 'string', label: 'String' },
+                            { value: 'number', label: 'Number' },
+                            { value: 'object', label: 'Object (JSON)' },
+                        ]}
                         onChange={(e) => {
                             const selectedType = e.target.value;
                             setNewFieldType(prev => ({
                                 ...prev,
                                 [parentKey]: selectedType
                             }));
-                            // Reset JSON fields when type changes
                             if (selectedType !== "object") {
                                 setJsonFields(prev => ({
                                     ...prev,
@@ -313,16 +256,11 @@ const NestedTable = () => {
                                 }));
                             }
                         }}
-                    >
-                        <option value="">Select Type</option>
-                        <option value="string">String</option>
-                        <option value="number">Number</option>
-                        <option value="object">Object (JSON)</option>
-                    </select>
+                    />
                     {newFieldType[parentKey] === "object" && (
                         <>
                             <br />
-                            <p> Please enter data after creating the JSON first</p>
+                            <p>Please enter data after creating the JSON first</p>
                         </>
                     )}
                     {newFieldType[parentKey] !== "object" && (
@@ -361,7 +299,7 @@ const NestedTable = () => {
                                     </td>
                                     <td>
                                         {typeof value === 'object' && value !== null ? (
-                                            renderTable(value, currentPath) // Recursively render nested tables
+                                            renderTable(value, currentPath)
                                         ) : (
                                             <span>{value}</span>
                                         )}
@@ -372,22 +310,76 @@ const NestedTable = () => {
                                                     placeholder="修改欄位名稱"
                                                     value={editStates[currentPath]?.field || ''}
                                                     onChange={(e) => handleEditChange(currentPath, 'field', e.target.value)}
+                                                    style={{ marginBottom: '10px' }}
                                                 />
-                                                <input
-                                                    type="text"
-                                                    placeholder="修改值"
-                                                    value={editStates[currentPath]?.value || ''}
-                                                    onChange={(e) => handleEditChange(currentPath, 'value', e.target.value)}
+                                                <Dropdown
+                                                    options={[
+                                                        { value: '', label: 'Select Type' },
+                                                        { value: 'string', label: 'String' },
+                                                        { value: 'number', label: 'Number' },
+                                                        { value: 'object', label: 'Object (JSON)' },
+                                                    ]}
+                                                    value={selectedTypes[currentPath] || ''}
+                                                    onChange={(e) => setSelectedTypes(prev => ({
+                                                        ...prev,
+                                                        [currentPath]: e.target.value
+                                                    }))}
                                                 />
+
+                                                {selectedTypes[currentPath] === 'object' ? (
+                                                    <div>
+                                                        <table border="1" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                                            <thead>
+                                                                <tr>
+                                                                    <th colSpan="2">
+                                                                        <h4>Enter JSON Key-Value Pairs:</h4>
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>
+                                                                        <input
+                                                                            type="text"
+                                                                            placeholder="New Key"
+                                                                            onChange={(e) => {
+                                                                                const newKey = e.target.value;
+                                                                                handleEditChange(currentPath, 'newKey', newKey);
+                                                                            }}
+                                                                        />
+                                                                    </td>
+                                                                    <td>
+                                                                        <input
+                                                                            type="text"
+                                                                            placeholder="New Value"
+                                                                            onChange={(e) => {
+                                                                                const newValue = e.target.value;
+                                                                                const newKey = editStates[currentPath]?.newKey;
+                                                                                const updatedValue = { ...editStates[currentPath]?.value, [newKey]: newValue };
+                                                                                handleEditChange(currentPath, 'value', updatedValue);
+                                                                            }}
+                                                                        />
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                ) : (
+                                                    <input
+                                                        type="text"
+                                                        placeholder="修改值"
+                                                        value={editStates[currentPath]?.value || ''}
+                                                        onChange={(e) => handleEditChange(currentPath, 'value', e.target.value)}
+                                                    />
+                                                )}
                                                 <Button label="刪除" onClick={() => handleDeleteField(currentPath)} />
-                                                <Button label="提交修改" onClick={() => handleEditField(currentPath, editStates[currentPath]?.field, editStates[currentPath]?.value)} />
+                                                <Button label="提交修改" onClick={() => handleEditField(currentPath, editStates[currentPath]?.field, editStates[currentPath]?.value, selectedTypes[currentPath])} />
                                             </div>
                                         )}
                                     </td>
                                 </tr>
                             );
                         })}
-                        {/* Render the row to add new fields */}
                         {renderAddFieldRow(parentKey)}
                     </tbody>
                 </table>
@@ -410,11 +402,10 @@ const NestedTable = () => {
                                     <Button label="More" onClick={() => handleMoreClick(key)} />
                                 </td>
                                 <td>
-                                    {renderTable(value, key)} {/* Render the nested table */}
+                                    {renderTable(value, key)}
                                 </td>
                             </tr>
                         ))}
-                        {/* Add the new field input row */}
                         {renderAddFieldRow('/')}
                     </tbody>
                 </table>

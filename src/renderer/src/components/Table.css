@@ -7,8 +7,8 @@
     clip-path: polygon( /* Define a custom clipping path */
         0 0,
         100% 0,
-        100% calc(100% - 1rem + 2px),
-        calc(100% - 1rem + 2px) 100%,
+        100% calc(100% - 1rem + 5px),
+        calc(100% - 1rem + 5px) 100%,
         0 100%
     );
     position: relative; /* Positioning for the ::before pseudo-element */
@@ -19,12 +19,12 @@
 
 .Table::before {
     background-color: #00f0ff; /* Background color for the pseudo-element */
-    bottom: 5px; /* Position from the bottom */
+    bottom: 3px; /* Position from the bottom */
     content: ""; /* Empty content for the pseudo-element */
     display: block; /* Make it a block element */
-    height: 3px; /* Height of the pseudo-element */
+    height: 5px; /* Height of the pseudo-element */
     position: absolute; /* Positioning for the pseudo-element */
-    right: -6px; /* Position from the right */
+    right: -7px; /* Position from the right */
     top: auto; /* Automatic positioning from the top */
     transform: rotate(-45deg); /* Rotate the pseudo-element */
     width: 22.627416px; /* Width of the pseudo-element */
