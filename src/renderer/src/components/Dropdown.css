@@ -27,7 +27,6 @@
 
 .dropdown:hover {
     background-color: rgba(0, 240, 255, 0.2); /* Darker background on hover */
-    transform: scale(1.05); /* Slightly enlarge the dropdown on hover */
 }
 
 .dropdown:focus {
@@ -49,10 +48,6 @@
     width: 12px; /* adjust this value to match the width of the dropdown */
     z-index: 100;
   }
-
-.Dropdown::before:hover {
-    transform: rotate(-45deg) scale(1.05); /* Add this rule to transform the pseudo-element on hover */
-}
 
 /* Style for options when dropdown is active */
 .dropdown:focus option {
