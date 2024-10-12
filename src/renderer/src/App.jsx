@@ -10,7 +10,7 @@ import DarkThemePage from "./components/darktheme";
 import TestingPage from "./components/TestingPage";
 import NetworkPage from "./components/Network";
 import LocalStorageTutorial from "./tutorial/LocalStorage";
-import FirebasePage from "./components/Firebase";
+import FirebasePage from "./components/FirebasePage";
 import TutorialPage from "./components/TutorialPage";
 
 // The main componenet of the app

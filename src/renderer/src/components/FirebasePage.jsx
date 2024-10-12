@@ -4,20 +4,22 @@ import React, { useState, useEffect } from 'react';
 // firebase package
 import { getDatabase, ref, set, get, child, update, remove } from "firebase/database";
 
-// the "auth" is used for the functions from package "firebase/auth"
 import firebaseTools from "../assets/firebase";
+
 import firebaseImagePath from "../assets/firebase-Icon.png";
 import Button from './Button';
 import "./FirebasePage.css";
 import Dropdown from './Dropdown';
 
-const FirebasePage = () => {
+// Example of basic operation in firebase realtime database
+const BasicOperation = () => {
     // Write to Realtime Database
     const writeData = async (path, content) => {
         await set(ref(firebaseTools.database, path), content);
-        console.log("Success");
+        console.log("Success to write the path:" + path);
     };
 
+    // Read from Realtime Database with given path
     const readData = async (path) => {
         const databaseReference = ref(firebaseTools.database);
         get(child(databaseReference, path)).then((snapshot) => {
@@ -26,26 +28,23 @@ const FirebasePage = () => {
             } else {
                 console.log("No data available");
             }
-        }).catch((error) => {
-            console.error(error);
-        });
+        })
     };
 
-    return (
-        <div className="firebasePage">
-            <img src={firebaseImagePath} className="firebaseImage" />
-            <p>Trying the real firebase page</p>
-            <div className="Table">
-                <NestedTable />
-            </div>
-            <Button label={"Back to last page"} onClick={() => window.history.back()} />
-        </div>
-    );
-};
+    // Update data from Realtime Database with given content
+    const updateData = async (path, content) => {
+        await update(ref(firebaseTools.database, path), content);
+        console.log("Successfully updated the path:" + path);
+    }
 
-export default FirebasePage;
+    // Delete data from Realtime Database with given path
+    const deleteData = async (path) => {
+        await remove(ref(firebaseTools.database, path));
+        console.log("Data from the path:" + (path) + " has been deleted successfully");
+    }
+}
 
-// Nested Table
+// Nested Table for firebase realtime database display
 const NestedTable = () => {
     const [data, setData] = useState({});
     const [newFieldInputs, setNewFieldInputs] = useState({});
@@ -55,6 +54,7 @@ const NestedTable = () => {
     const [selectedTypes, setSelectedTypes] = useState({});
 
     useEffect(() => {
+        // fetch all data from firebase for operation
         const fetchAllDataFromFirebase = async () => {
             const databaseReference = ref(firebaseTools.database);
             const path = "/";
@@ -73,62 +73,53 @@ const NestedTable = () => {
         fetchAllDataFromFirebase();
     }, []);
 
-    // Function to add a new field of type object
-    const handleAddObjectField = async (path) => {
-        if (jsonFields[path]) {
-            const updatedData = { ...data };
-            const keys = path.split('/');
-            const lastKey = keys.pop();
-            const parentObject = keys.reduce((obj, key) => obj[key], updatedData);
-
-            if (!parentObject[lastKey]) {
-                parentObject[lastKey] = {};
-            }
-
-            parentObject[lastKey] = { ...parentObject[lastKey], ...jsonFields[path] };
-            setData(updatedData);
-            await set(ref(firebaseTools.database, path), parentObject[lastKey]);
-
-            alert("Successfully added object field");
-            setNewFieldInputs(prev => ({
-                ...prev,
-                [path]: { newField: '', newValue: '' }
-            }));
-            setJsonFields(prev => ({
-                ...prev,
-                [path]: {}
-            }));
-        }
-    };
-
+    // delete field based on given path
     const handleDeleteField = async (path) => {
         const databaseReference = ref(firebaseTools.database);
-        const keys = path.split('/');
-        const parentPath = keys.slice(0, -1).join('/');
-        const fieldNameToDelete = keys[keys.length - 1];
+        const keys = path.split('/');   // split the path into an array of keys
+        const parentPath = keys.slice(0, -1).join('/'); // get the parent path from remove the last key from the "keys" array
+        const fieldNameToDelete = keys[keys.length - 1];    // get the last key as the field name to delete
 
+        // get a snapshot of the parent object
         const parentSnapshot = await get(child(databaseReference, parentPath));
         if (parentSnapshot.exists()) {
+            // copy the parent object from the snapshot
             const parentData = parentSnapshot.val();
+            // delete the field from the parent object
             delete parentData[fieldNameToDelete];
             if (Object.keys(parentData).length === 0) {
-                alert("Parent object will remain as it has no fields left.");
-                return;
+                // Delete the parent object also if it is empty
+                await remove(child(databaseReference, parentPath));
+                console.log("Parent object deleted successfully");
             }
         }
 
+        // delete the field in the realtime database
         await remove(child(databaseReference, path))
             .then(() => {
                 console.log("Data deleted successfully");
                 alert("Successfully deleted");
-                setData(prevData => {
-                    const updatedData = { ...prevData };
+                // Update the local data "Data" based on the action of deleting field
+                setData(previousData => {
+                    const updatedData = { ...previousData };
                     const parentKeys = path.split('/').slice(0, -1);
                     let parent = updatedData;
                     for (const key of parentKeys) {
                         parent = parent[key];
                     }
-                    delete parent[fieldNameToDelete];
+                    if (parent) {
+                        delete parent[fieldNameToDelete];
+                        // Check if the parent object is empty,
+                        if (Object.keys(parent).length === 0) {
+                            // Delete the parent object also from the local data "Data" if it is empty
+                            const grandParentKeys = parentKeys.slice(0, -1);
+                            let grandParent = updatedData;
+                            for (const key of grandParentKeys) {
+                                grandParent = grandParent[key];
+                            }
+                            delete grandParent[parentKeys[parentKeys.length - 1]];
+                        }
+                    }
                     return updatedData;
                 });
             })
@@ -137,6 +128,7 @@ const NestedTable = () => {
             });
     };
 
+    // update the [fieldame, value and type] of the field based on given path
     const handleEditField = async (path, newFieldName, editValue, selectedType) => {
         if (newFieldName !== undefined && editValue !== undefined) {
             const updatedData = { ...data };
@@ -144,22 +136,28 @@ const NestedTable = () => {
             const lastKey = keys.pop();
             const parentObject = keys.reduce((obj, key) => obj[key], updatedData);
 
+            // check if the parent object exists, if not, return
             if (!parentObject[lastKey]) {
                 console.error("Parent path does not exist in updatedData:", path);
                 return;
             }
-
+            // check if the selected type is a number, then convert the "editValue" to a number
             if (selectedType === 'number') {
                 editValue = Number(editValue);
             }
 
+            //check if the newFieldName is differnent from the last key, then delete the last key,
             if (newFieldName !== lastKey) {
                 delete parentObject[lastKey];
             }
+            // assume the newFieldName is the same as the last key, then update the value of the field with the "editValue",
+            // if the newFieldName is not the same as the last key, the lastkey has already been deleted, so add the new field with name "newFieldName" , and assign the value of the field with the "editValue"
             parentObject[newFieldName] = editValue;
 
+            // Update the local data "Data" based on the action of editing field
             setData(updatedData);
 
+            // update the field in the realtime database
             try {
                 await set(ref(firebaseTools.database, path), editValue);
                 alert("Successfully updated");
@@ -173,13 +171,16 @@ const NestedTable = () => {
         }
     };
 
+    // toggle the visibility of the more button
     const handleMoreClick = (key) => {
+        // if the more button of the "key" is visible, then hide it, else show it
         setEditStates(prev => ({
             ...prev,
             [key]: { ...prev[key], visible: !prev[key]?.visible, field: prev[key]?.field || '', value: prev[key]?.value || '' }
         }));
     };
 
+    // handle the change of the input field
     const handleEditChange = (path, field, value) => {
         setEditStates((prev) => ({
             ...prev,
@@ -190,37 +191,51 @@ const NestedTable = () => {
         }));
     };
 
+    // add a new field when the button "Add" is clicked
     const handleFieldAdd = async (path, newFieldName, newFieldValue) => {
+        // check if the newFieldName and newFieldValue are not empty
         if (newFieldInputs[path]?.newField && newFieldType[path]) {
             const updatedData = { ...data };
             const keys = path.split('/');
             const lastKey = keys.pop();
             const parentObject = keys.reduce((obj, key) => obj[key], updatedData);
 
+            // check if the parent object exists, if not, create it
             if (!parentObject[lastKey]) {
                 parentObject[lastKey] = {};
             }
 
+            // check if the newFieldType is an object, then create a new field with name "newFieldName" and assign the object "newFieldValue" as the value of the field
             if (newFieldType[path] === "object") {
+                //assume the newFieldName is the same as the last key, then update the value of the field with the "newFieldValue",
+                // if the newFieldName is not the same as the last key, add the new field with name "newFieldName"
                 if (!parentObject[lastKey][newFieldName]) {
                     parentObject[lastKey][newFieldName] = {};
                 }
                 parentObject[lastKey][newFieldName] = { ...jsonFields[path] };
-            } else {
+            }
+            // else, the newFiledType is not an object, then create a new field with name "newFieldName" and directly assign the value of the field with the "newFieldValue"
+            else {
                 parentObject[lastKey][newFieldName] = newFieldValue;
             }
 
+            // Update the local data "Data" based on the action of adding field
             setData(updatedData);
+            // update the field in the realtime database
             await set(ref(firebaseTools.database, "/"), updatedData);
-
+            // alert the user that the action of adding field is completed
             alert("Successfully added");
+            // reset the input fields after the action of adding field completed
             setNewFieldInputs(prev => ({
                 ...prev,
                 [path]: { newField: '', newValue: '' }
             }));
+        } else {
+            console.error("Invalid input: newFieldName or newFieldValue is undefined");
         }
     };
 
+    // render the add field row wiht the given parentKey, so that it can use setNewFieldInputs(), setNewFieldType(), setJsonFields() normally according to the "parentKey"
     const renderAddFieldRow = (parentKey) => {
         return (
             <tr>
@@ -283,6 +298,7 @@ const NestedTable = () => {
         );
     };
 
+    // render the table with given object "obj" and path "parentKey"
     const renderTable = (obj, parentKey) => {
         return (
             <div style={{ marginBottom: '20px' }}>
@@ -413,3 +429,19 @@ const NestedTable = () => {
         </div>
     );
 };
+
+// Page for firebase operation
+const FirebasePage = () => {
+    return (
+        <div className="firebasePage">
+            <img src={firebaseImagePath} className="firebaseImage" />
+            <p>Trying the real firebase page</p>
+            <div className="Table">
+                <NestedTable />
+            </div>
+            <Button label={"Back to last page"} onClick={() => window.history.back()} />
+        </div>
+    );
+};
+
+export default FirebasePage;
